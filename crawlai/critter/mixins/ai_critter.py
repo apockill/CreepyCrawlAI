@@ -1,8 +1,3 @@
-from godot import exposed
-
-from crawlai.critter.controllable_critter import ControllableCritter
-
-
 class AICritter:
 	"""
 	Terms

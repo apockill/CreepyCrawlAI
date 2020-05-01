@@ -1,3 +1,2 @@
 from .base_critter import BaseCritter
-from .controllable_critter import ControllableCritter
-from .selectable_critter import SelectableCritter
+from .critter import Critter

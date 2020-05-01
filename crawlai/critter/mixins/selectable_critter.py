@@ -1,7 +1,5 @@
-from godot import exposed
+from godot import exposed, export
 from godot.bindings import InputEventMouseButton, BUTTON_LEFT
-
-from crawlai.critter import BaseCritter
 
 global_selected_critter = None
 """Keep track of the (globally) latest selected critter"""
@@ -12,7 +10,6 @@ class SelectableCritter:
 
 	def _on_critter_input_event(self, viewport, event, shape_idx):
 		"""Keep track of when a critter has been clicked on or clicked away."""
-
 		if (isinstance(event, InputEventMouseButton)
 				and event.pressed
 				and event.button_index == BUTTON_LEFT):

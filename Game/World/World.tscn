@@ -7,8 +7,13 @@
 
 [node name="BaseLevel" type="Node2D"]
 
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2( 511, 299 )
+current = true
+script = ExtResource( 1 )
+
 [node name="Sprite" type="Sprite" parent="."]
-position = Vector2( 1675, 1073 )
+position = Vector2( 1667, 916 )
 scale = Vector2( 77.35, 61.384 )
 texture = ExtResource( 4 )
 region_enabled = true
@@ -23,14 +28,6 @@ position = Vector2( 134, 173 )
 
 [node name="Critter" parent="." instance=ExtResource( 2 )]
 position = Vector2( 424, 280 )
-
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2( 511, 299 )
-current = true
-script = ExtResource( 1 )
-zoom_step = 1.0
-zoom_max = 10.0
-zoom_speed = 8.0
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 script = ExtResource( 3 )

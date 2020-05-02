@@ -17,8 +17,8 @@ class ControllableMixin(SelectableMixin):
 	speed_multiplier = 300
 	"""How fast to move on keypress"""
 
-	def _physics_process(self, delta: float) -> None:
-		super()._physics_process(delta)
+	def _process(self, delta: float) -> None:
+		super()._process(delta)
 
 		if not self.is_selected:
 			# Only process input if this critter is selected

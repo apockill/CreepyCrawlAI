@@ -1,6 +1,6 @@
 from godot.bindings import Vector2, Input
 
-from crawlai.critter.mixins.selectable_critter import SelectableMixin
+from crawlai.critter.mixins.selectable_mixin import SelectableMixin
 from crawlai import keybindings
 
 directions = {

@@ -1,8 +1,7 @@
-from godot import exposed, export
-
-from typing import Set, DefaultDict
-from collections import defaultdict
 from godot.bindings import Node
+
+from typing import List, DefaultDict
+from collections import defaultdict
 
 from crawlai.actor import Actor
 
@@ -17,15 +16,16 @@ class ObservativeMixin:
 			bounds of a child CollisionShape2D.
 	"""
 
-	objects_within: DefaultDict[int, Set[Actor]]
-	"""A dict of {RID: Set(Node, Node, Node)} """
+	objects_within: List[Node]
+	"""A dict of {RID: [Actor, Actor} """
 
 	def _ready(self):
-		self.objects_within = defaultdict(set)
 		super()._ready()
+		self.objects_within = []
 
 	def _on_input_area_body_entered(self, body):
-		print("Entered", body)
+		if body.get_instance_id() != self.get_instance_id():
+			self.objects_within.append(body)
 
 	def _on_input_area_body_exited(self, body):
-		print("Exited", body)
+		self.objects_within.remove(body)

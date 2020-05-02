@@ -11,3 +11,7 @@ pythonscript/
 
 # Personal directories
 UnusedAssets/
+
+# Python stuff
+*.pyc
+__pycache__

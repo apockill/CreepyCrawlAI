@@ -22,10 +22,6 @@ class PanZoomCamera(Camera2D):
 	last_mouse_pos = Vector2(0, 0)
 
 	def _ready(self):
-		"""
-		Called every time the node is added to the scene.
-		Initialization here.
-		"""
 		world = self.get_parent()
 		self.set_process_input(True)
 		self.set_process(True)

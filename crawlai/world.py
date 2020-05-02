@@ -6,8 +6,4 @@ from godot.bindings import Node2D
 class World(Node2D):
 
 	def _ready(self):
-		"""
-		Called every time the node is added to the scene.
-		Initialization here.
-		"""
 		pass

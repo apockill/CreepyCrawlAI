@@ -1,4 +1,7 @@
-class AICritterMixin:
+from crawlai.critter.mixins.observative_mixin import ObservativeMixin
+
+
+class AICritterMixin(ObservativeMixin):
 	"""
 	Terms
 		V: Velocity (x, y components)
@@ -6,11 +9,12 @@ class AICritterMixin:
 	Inputs:
 		self.vx
 		self.vy
+		self.health
 
 		Nearest 10 critters:
 			vx
 			vy
-
+			health
 	Outputs:
 		self.vx
 		self.vy
@@ -25,11 +29,11 @@ class AICritterMixin:
 
 	def _physics_process(self, delta):
 		super()._physics_process(delta)
+		objects = self.objects_within_with_method(["velocity", "health"])
 
 	def get_inputs(self):
 		"""The inputs to the network are
 		self.vx, self.vy and the nearest N_NEAREST_CRITTERS vx and vy.
-
 		"""
 
 	def process_inputs_and_move(self):

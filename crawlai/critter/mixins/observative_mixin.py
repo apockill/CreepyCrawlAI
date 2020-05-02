@@ -16,16 +16,25 @@ class ObservativeMixin:
 			bounds of a child CollisionShape2D.
 	"""
 
-	objects_within: List[Node]
+	_objects_within: List[Node]
 	"""A dict of {RID: [Actor, Actor} """
+
+	@property
+	def objects_within(self) -> List[Node]:
+		return self._objects_within
+
+	def objects_within_with_method(self, methods: List[str]):
+		"""Get all objects with a certain method"""
+		return [o for o in self._objects_within
+				if all(o.get(m) is not None for m in methods)]
 
 	def _ready(self):
 		super()._ready()
-		self.objects_within = []
+		self._objects_within = []
 
 	def _on_input_area_body_entered(self, body):
 		if body.get_instance_id() != self.get_instance_id():
-			self.objects_within.append(body)
+			self._objects_within.append(body)
 
 	def _on_input_area_body_exited(self, body):
-		self.objects_within.remove(body)
+		self._objects_within.remove(body)

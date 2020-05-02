@@ -7,8 +7,7 @@ from crawlai.critter.base_critter import BaseCritter
 
 
 @exposed
-class Critter(ObservativeMixin,
-			  ControllableMixin,
+class Critter(ControllableMixin,
 			  AICritterMixin,
 			  BaseCritter):
 	pass

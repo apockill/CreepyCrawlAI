@@ -1,1 +1,2 @@
 numpy==1.18.3
+tensorflow==2.1.0

@@ -37,4 +37,7 @@ class ObservativeMixin:
 			self._objects_within.append(body)
 
 	def _on_input_area_body_exited(self, body):
-		self._objects_within.remove(body)
+		if body in self._objects_within:
+			self._objects_within.remove(body)
+		else:
+			print("ERROR! Body not in objects within...")

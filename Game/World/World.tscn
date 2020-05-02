@@ -22,12 +22,6 @@ region_enabled = true
 region_rect = Rect2( 0, 0, 1000, 1000 )
 region_filter_clip = true
 
-[node name="Critter2" parent="." instance=ExtResource( 2 )]
-position = Vector2( 223, 410 )
-
-[node name="Critter3" parent="." instance=ExtResource( 2 )]
-position = Vector2( 134, 173 )
-
 [node name="Critter" parent="." instance=ExtResource( 2 )]
 position = Vector2( 424, 280 )
 

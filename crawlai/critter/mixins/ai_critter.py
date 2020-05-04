@@ -29,7 +29,7 @@ class AICritterMixin(ObservativeMixin):
 
 	def _process(self, delta):
 		super()._process(delta)
-		objects = self.objects_within_with_method(["velocity", "health"])
+		objects = self.objects_within
 
 	def get_inputs(self):
 		"""The inputs to the network are

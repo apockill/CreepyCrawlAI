@@ -4,7 +4,7 @@ from godot.bindings import Node2D, ResourceLoader
 
 @exposed
 class World(Node2D):
-	min_num_critters = export(int, 100)
+	min_num_critters = export(int, 250)
 
 	def _ready(self):
 		critter = ResourceLoader.load("res://Game/Critter/Critter.tscn")

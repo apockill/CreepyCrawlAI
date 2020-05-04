@@ -1,6 +1,7 @@
 from godot import exposed, export
 from godot.bindings import KinematicBody2D, Vector2, Sprite
 
+from crawlai.constants import ZERO_VECTOR
 
 @exposed
 class Actor(Sprite):
@@ -13,5 +14,7 @@ class Actor(Sprite):
 		"""
 
 	def _process(self, delta: float) -> None:
-		# self.move_and_slide(self.velocity)
+		if self.velocity != ZERO_VECTOR:
+			# Sprite movement code goes here
+			pass
 		pass

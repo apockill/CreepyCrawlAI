@@ -23,11 +23,6 @@ class ObservativeMixin:
 	def objects_within(self) -> List[Node]:
 		return self._objects_within
 
-	def objects_within_with_method(self, methods: List[str]):
-		"""Get all objects with a certain method"""
-		return [o for o in self._objects_within
-				if all(o.get(m) is not None for m in methods)]
-
 	def _ready(self):
 		super()._ready()
 		self._objects_within = []

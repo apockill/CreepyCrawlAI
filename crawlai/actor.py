@@ -3,6 +3,7 @@ from godot.bindings import KinematicBody2D, Vector2
 
 from crawlai.constants import ZERO_VECTOR
 
+
 @exposed
 class Actor(KinematicBody2D):
 	velocity = export(Vector2, default=Vector2(0, 0))

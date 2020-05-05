@@ -1,9 +1,6 @@
 from godot.bindings import Node
 
-from typing import List, DefaultDict
-from collections import defaultdict
-
-from crawlai.actor import Actor
+from typing import List
 
 
 class ObservativeMixin:

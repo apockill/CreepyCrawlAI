@@ -15,6 +15,5 @@ class Actor(Sprite):
 
 	def _process(self, delta: float) -> None:
 		if self.velocity != ZERO_VECTOR:
-			# Sprite movement code goes here
-			pass
-		pass
+			self.position += self.velocity
+

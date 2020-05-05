@@ -27,8 +27,8 @@ class AICritterMixin(ObservativeMixin):
 	n_nearest_critters = 10
 	"""How many critters to include in the inputs for the network"""
 
-	def _process(self, delta):
-		super()._process(delta)
+	def _physics_process(self, delta):
+		super()._physics_process(delta)
 		objects = self.objects_within
 
 	def get_inputs(self):

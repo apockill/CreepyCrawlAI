@@ -4,7 +4,7 @@
 [ext_resource path="res://Game/Critter/Critter.tscn" type="PackedScene" id=2]
 [ext_resource path="res://crawlai/FPSLabel.gd" type="Script" id=3]
 [ext_resource path="res://Game/World/background.tres" type="Texture" id=4]
-[ext_resource path="res://crawlai/world.py" type="Script" id=5]
+[ext_resource path="res://crawlai/controller.py" type="Script" id=5]
 
 [node name="BaseLevel" type="Node2D"]
 script = ExtResource( 5 )

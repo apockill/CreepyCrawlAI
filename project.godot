@@ -9,10 +9,10 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "CanvasLayer",
+"base": "Reference",
 "class": "FpsLabel",
 "language": "GDScript",
-"path": "res://crawlai/FPSLabel.gd"
+"path": "res://crawlai/game_scripts/FPSLabel.gd"
 } ]
 _global_script_class_icons={
 "FpsLabel": ""
@@ -61,6 +61,10 @@ move_down={
 2d_physics/layer_1="critters"
 2d_physics/layer_2="foods"
 2d_physics/layer_3="walls"
+
+[python_script]
+
+print_startup_info=false
 
 [rendering]
 

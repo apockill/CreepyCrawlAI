@@ -1,10 +1,9 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://crawlai/camera_controls.py" type="Script" id=1]
-[ext_resource path="res://Game/Critter/Critter.tscn" type="PackedScene" id=2]
-[ext_resource path="res://crawlai/FPSLabel.gd" type="Script" id=3]
+[ext_resource path="res://crawlai/game_scripts/camera_controls.py" type="Script" id=1]
+[ext_resource path="res://crawlai/game_scripts/FPSLabel.gd" type="Script" id=3]
 [ext_resource path="res://Game/World/background.tres" type="Texture" id=4]
-[ext_resource path="res://crawlai/controller.py" type="Script" id=5]
+[ext_resource path="res://crawlai/game_scripts/controller.py" type="Script" id=5]
 
 [node name="BaseLevel" type="Node2D"]
 script = ExtResource( 5 )
@@ -21,9 +20,6 @@ texture = ExtResource( 4 )
 region_enabled = true
 region_rect = Rect2( 0, 0, 1000, 1000 )
 region_filter_clip = true
-
-[node name="Critter" parent="." instance=ExtResource( 2 )]
-position = Vector2( 424, 280 )
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 script = ExtResource( 3 )

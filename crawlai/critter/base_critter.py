@@ -1,10 +1,27 @@
-from godot import exposed, export
+from typing import Tuple
+from abc import abstractmethod
 
-from crawlai.actor import Actor
+from godot.bindings import ResourceLoader
+
+from crawlai.grid_item import GridItem
+
+_critter_resource = ResourceLoader.load("res://Game/Critter/Critter.tscn")
 
 
-@exposed
-class BaseCritter(Actor):
+class BaseCritter(GridItem):
 	"""The base class for all critters"""
-	health = export(int, default=100)
-	age = export(int, default=0)
+
+	def __init__(self):
+		super().__init__()
+		self.health = 100
+		self.age = 0
+
+	def tick(self):
+		self.age += 1
+
+	@abstractmethod
+	def get_move(self) -> Tuple[int, int]:
+		"""Return the next move. Should be signed 1s and 0s. """
+
+	def _load_instance(self):
+		return _critter_resource.instance()

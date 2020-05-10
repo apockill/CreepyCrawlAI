@@ -51,11 +51,11 @@ def test_add_item(w, h, successful, pos):
 def test_random_movement_persists_safely():
 	"""Test that randomly moving 'critters' will never end up being deleted
 	off of the grid"""
-	N_CREATURES = 5000
+	N_CREATURES = 1250
 	N_TICKS = 1000
 
 	world = Node2D()
-	grid = Grid(width=100, height=100, spacing=100, root_node=world)
+	grid = Grid(width=50, height=50, spacing=100, root_node=world)
 
 	# Populate the grid
 	for _ in range(N_CREATURES):

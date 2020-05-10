@@ -44,7 +44,7 @@ class Grid:
 
 	def move_item_relative(self, rel_pos: Position, grid_item: GridItem):
 		self.try_move_item(
-			pos=self.id_to_pos[grid_item.id] + rel_pos.x,
+			pos=self.id_to_pos[grid_item.id] + rel_pos,
 			grid_item=grid_item)
 
 	def try_move_item(self, pos: Position, grid_item: GridItem, is_new=False):

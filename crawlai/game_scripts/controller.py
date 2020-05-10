@@ -12,16 +12,32 @@ from crawlai.critter.critter import Critter
 
 @exposed
 class World(Node2D):
-	min_num_critters = export(int, 1000)
-	grid_width = export(int, 100)
-	grid_height = export(int, 100)
+	min_num_critters = export(int, 0)
+	grid_width = export(int, 1)
+	grid_height = export(int, 1)
+	grid_spacing = export(int, 1)
 
 	def _ready(self):
-		self.grid = Grid(width=self.grid_width, height=self.grid_height)
+		self.grid = Grid(
+			width=self.grid_width,
+			height=self.grid_height,
+			spacing=self.grid_spacing,
+			root_node=self)
 		for i in range(0, self.min_num_critters):
-			self.create_item(*self.grid.random_free_cell, Critter())
+			self.grid.add_item(self.grid.random_free_cell, Critter())
+		print("Created", self.min_num_critters, "Critters")
 
-	def create_item(self, x, y, grid_item):
-		"""Add the child to the world node and register it in the grid"""
-		self.add_child(grid_item.instance)
-		self.grid.add_item(x, y, grid_item)
+	def _process(self, delta):
+		# Run tick for all grid items
+		for grid_item in self.grid:
+			grid_item.tick()
+
+		moves = {}
+		# Process critter moves here, in the future in another thread
+		for grid_item in self.grid:
+			if isinstance(grid_item, Critter):
+				moves[grid_item.id] = grid_item.get_move()
+
+		# Actually move the critters here
+		for grid_item in self.grid:
+			self.grid.move_item_relative(moves[grid_item.id], grid_item)

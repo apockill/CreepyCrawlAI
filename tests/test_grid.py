@@ -74,7 +74,7 @@ def test_random_movement_persists_safely():
 			moves[item.id] = item.get_move()
 
 		for i, item in enumerate(grid):
-			grid.try_move_item(moves[item.id], item)
+			grid.move_item_relative(moves[item.id], item)
 		validate_grid(grid)
 
 		# Verify that all of the critters are still around

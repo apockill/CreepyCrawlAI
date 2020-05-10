@@ -4,12 +4,13 @@ import numpy as np
 
 from crawlai.critter.base_critter import BaseCritter
 from crawlai import keybindings
+from crawlai.position import Position
 
 directions = {
-	keybindings.MOVE_UP: np.asarray([0, -1]),
-	keybindings.MOVE_DOWN: np.asarray([0, 1]),
-	keybindings.MOVE_LEFT: np.asarray([-1, 0]),
-	keybindings.MOVE_RIGHT: np.asarray([1, 0])
+	keybindings.MOVE_UP: Position(0, -1),
+	keybindings.MOVE_DOWN: Position(0, 1),
+	keybindings.MOVE_LEFT: Position(-1, 0),
+	keybindings.MOVE_RIGHT: Position(1, 0)
 }
 
 
@@ -19,12 +20,12 @@ class ControllableMixin(BaseCritter):
 	speed_multiplier = 300
 	"""How fast to move on keypress"""
 
-	def get_move(self):
+	def get_move(self) -> Position:
 		if not self.is_selected:
 			# Only process input if this critter is selected
 			return super().get_move()
 
-		direction = np.asarray([0, 0])
+		direction = Position(0, 0)
 		for key, vector in directions.items():
 			direction += vector * int(Input.is_action_pressed(key))
 		return direction

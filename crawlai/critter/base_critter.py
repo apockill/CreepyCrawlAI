@@ -4,6 +4,7 @@ from abc import abstractmethod
 from godot.bindings import ResourceLoader
 
 from crawlai.grid_item import GridItem
+from crawlai.position import Position
 
 _critter_resource = ResourceLoader.load("res://Game/Critter/Critter.tscn")
 
@@ -20,7 +21,7 @@ class BaseCritter(GridItem):
 		self.age += 1
 
 	@abstractmethod
-	def get_move(self) -> Tuple[int, int]:
+	def get_move(self) -> Position:
 		"""Return the next move. Should be signed 1s and 0s. """
 
 	def _load_instance(self):

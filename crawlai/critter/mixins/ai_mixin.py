@@ -1,4 +1,7 @@
+import random
+
 from crawlai.critter.base_critter import BaseCritter
+from crawlai.position import Position
 
 
 class AICritterMixin(BaseCritter):
@@ -23,10 +26,11 @@ class AICritterMixin(BaseCritter):
 		- Add a self.signal
 		- Train each step on the outcome of the scenario after running
 	"""
+	CHOICES = [Position(*c) for c in [(0, 0), (0, 1), (1, 0), (-1, 0), (0, -1)]]
 
-	n_nearest_critters = 10
-	"""How many critters to include in the inputs for the network"""
+	def __init__(self):
+		super().__init__()
 
-	def get_move(self):
-		print("AICritter calculating move... Yes, do nothing!")
-		return 0, 0
+	def get_move(self) -> Position:
+		"""Super smart AI goes here"""
+		return random.choice(self.CHOICES)

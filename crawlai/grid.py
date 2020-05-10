@@ -58,22 +58,20 @@ class Grid:
 		# Apply new position
 		self._grid[pos.x][pos.y] = grid_item.id
 		self.id_to_pos[grid_item.id] = pos
+
 		grid_item.instance.set_position(
 			Vector2(pos.x * self._spacing, pos.y * self._spacing))
 		return True
 
 	def is_empty_coord(self, pos: Position):
 		"""Checks if this is a valid coordinate to move a critter into"""
-		# Do a bounds check
-		if not 0 <= pos.x < self.width:
-			return False
-		if not 0 <= pos.y < self.height:
-			return False
-
 		# Verify there is no object in that position
-		if self._grid[pos.x][pos.y] != 0:
+		try:
+			if self._grid[pos[0]][pos[1]] != 0:
+				return False
+			return True
+		except IndexError:
 			return False
-		return True
 
 	@property
 	def random_free_cell(self):

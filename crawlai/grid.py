@@ -24,6 +24,10 @@ class Grid:
 		# World node
 		self._root_node: Node = root_node
 
+		# Settings
+		self.rendering = True
+		"""When false, object instances don't get set_position called"""
+
 	def __iter__(self):
 		for grid_item in self.id_to_obj.values():
 			yield grid_item
@@ -59,8 +63,9 @@ class Grid:
 		self._grid[pos.x][pos.y] = grid_item.id
 		self.id_to_pos[grid_item.id] = pos
 
-		grid_item.instance.set_position(
-			Vector2(pos.x * self._spacing, pos.y * self._spacing))
+		if self.rendering:
+			grid_item.instance.set_position(
+				Vector2(pos.x * self._spacing, pos.y * self._spacing))
 		return True
 
 	def is_empty_coord(self, pos: Position):

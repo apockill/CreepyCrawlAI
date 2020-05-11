@@ -7,6 +7,10 @@
 
 [node name="BaseLevel" type="Node2D"]
 script = ExtResource( 5 )
+min_num_critters = 2000
+grid_width = 100
+grid_height = 100
+grid_spacing = 100
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2( 511, 299 )
@@ -26,4 +30,9 @@ region_filter_clip = true
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="PanelContainer" parent="CanvasLayer" instance=ExtResource( 2 )]
+[node name="GUI" parent="CanvasLayer" instance=ExtResource( 2 )]
+margin_right = 225.0
+margin_bottom = 54.0
+[connection signal="toggled" from="CanvasLayer/GUI/HBoxContainer/RenderButton" to="." method="_on_render_button_toggled"]
+
+[editable path="CanvasLayer/GUI"]

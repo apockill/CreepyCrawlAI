@@ -41,3 +41,8 @@ class World(Node2D):
 		# Actually move the critters here
 		for grid_item in self.grid:
 			self.grid.move_item_relative(moves[grid_item.id], grid_item)
+
+	def _on_render_button_toggled(self, button_pressed):
+		""" Enable and disable rendering
+		Connected to: GUI.RenderButton """
+		self.grid.rendering = button_pressed

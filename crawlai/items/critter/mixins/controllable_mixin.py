@@ -1,8 +1,6 @@
-from godot.bindings import Vector2, Input
+from godot.bindings import Input
 
-import numpy as np
-
-from crawlai.critter.base_critter import BaseCritter
+from crawlai.items.critter.base_critter import BaseCritter
 from crawlai import keybindings
 from crawlai.position import Position
 
@@ -20,10 +18,10 @@ class ControllableMixin(BaseCritter):
 	speed_multiplier = 300
 	"""How fast to move on keypress"""
 
-	def get_move(self) -> Position:
+	def get_move(self, inputs) -> Position:
 		if not self.is_selected:
 			# Only process input if this critter is selected
-			return super().get_move()
+			return super().get_move(inputs)
 
 		direction = Position(0, 0)
 		for key, vector in directions.items():

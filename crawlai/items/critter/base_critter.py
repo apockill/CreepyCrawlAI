@@ -21,7 +21,7 @@ class BaseCritter(GridItem):
 		self.age += 1
 
 	@abstractmethod
-	def get_move(self) -> Position:
+	def get_move(self, inputs) -> Position:
 		"""Return the next move. Should be signed 1s and 0s. """
 
 	def _load_instance(self):

@@ -1,6 +1,6 @@
 import random
 
-from crawlai.critter.base_critter import BaseCritter
+from crawlai.items.critter.base_critter import BaseCritter
 from crawlai.position import Position
 
 
@@ -31,6 +31,6 @@ class AICritterMixin(BaseCritter):
 	def __init__(self):
 		super().__init__()
 
-	def get_move(self) -> Position:
+	def get_move(self, inputs) -> Position:
 		"""Super smart AI goes here"""
 		return random.choice(self.CHOICES)

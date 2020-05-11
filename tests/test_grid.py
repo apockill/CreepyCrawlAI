@@ -4,9 +4,8 @@ from godot.bindings import Node2D
 
 from crawlai.position import Position
 from crawlai.grid import Grid
-from crawlai.critter.base_critter import BaseCritter
-from crawlai.critter.mixins.random_movement_mixin import RandomCritterMixin
-from crawlai.critter.critter import Critter
+from crawlai.items.critter.mixins.random_movement_mixin import RandomCritterMixin
+from crawlai.items.critter.critter import Critter
 from tests.helpers import validate_grid
 
 parameters = [
@@ -71,7 +70,7 @@ def test_random_movement_persists_safely():
 
 		moves = {}
 		for item in grid:
-			moves[item.id] = item.get_move()
+			moves[item.id] = item.get_move(grid)
 
 		for i, item in enumerate(grid):
 			grid.move_item_relative(moves[item.id], item)

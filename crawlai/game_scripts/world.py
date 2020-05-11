@@ -1,18 +1,15 @@
 from godot import exposed, export
-from godot.bindings import (
-	Node2D,
-	ResourceLoader,
-	InputEventMouseButton,
-	BUTTON_LEFT,
-)
+from godot.bindings import Node2D
 
 from crawlai.grid import Grid
-from crawlai.critter.critter import Critter
+from crawlai.items.critter.critter import Critter
+from crawlai.items.food import Food
 
 
 @exposed
 class World(Node2D):
 	min_num_critters = export(int, 100)
+	min_num_food = export(int, 10)
 	grid_width = export(int, 100)
 	grid_height = export(int, 100)
 	grid_spacing = export(int, 100)
@@ -25,7 +22,10 @@ class World(Node2D):
 			root_node=self)
 		for i in range(0, self.min_num_critters):
 			self.grid.add_item(self.grid.random_free_cell, Critter())
+		for i in range(0, self.min_num_food):
+			self.grid.add_item(self.grid.random_free_cell, Food())
 		print("Created", self.min_num_critters, "Critters")
+		print("Created", self.min_num_food, "Foods")
 
 	def _process(self, delta):
 		# Run tick for all grid items
@@ -36,11 +36,12 @@ class World(Node2D):
 		# Process critter moves here, in the future in another thread
 		for grid_item in self.grid:
 			if isinstance(grid_item, Critter):
-				moves[grid_item.id] = grid_item.get_move()
+				moves[grid_item.id] = grid_item.get_move(self.grid)
 
 		# Actually move the critters here
 		for grid_item in self.grid:
-			self.grid.move_item_relative(moves[grid_item.id], grid_item)
+			if isinstance(grid_item, Critter):
+				self.grid.move_item_relative(moves[grid_item.id], grid_item)
 
 	def _on_render_button_toggled(self, button_pressed):
 		""" Enable and disable rendering

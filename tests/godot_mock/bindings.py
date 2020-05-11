@@ -54,3 +54,10 @@ class ResourceLoader:
 				return Sprite()
 
 		return Unloaded()
+
+
+class InputEventMouseButton:
+	pass
+
+
+BUTTON_LEFT = 1

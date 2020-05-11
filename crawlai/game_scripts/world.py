@@ -12,10 +12,10 @@ from crawlai.critter.critter import Critter
 
 @exposed
 class World(Node2D):
-	min_num_critters = export(int, 0)
-	grid_width = export(int, 1)
-	grid_height = export(int, 1)
-	grid_spacing = export(int, 1)
+	min_num_critters = export(int, 100)
+	grid_width = export(int, 100)
+	grid_height = export(int, 100)
+	grid_spacing = export(int, 100)
 
 	def _ready(self):
 		self.grid = Grid(

@@ -1,14 +1,17 @@
 import pytest
 import mock
+
 from godot.bindings import Node2D
+import numpy as np
 
 from crawlai.position import Position
 from crawlai.grid import Grid
-from crawlai.items.critter.mixins.random_movement_mixin import RandomCritterMixin
+from crawlai.items.critter.mixins.random_movement_mixin import \
+	RandomCritterMixin
 from crawlai.items.critter.critter import Critter
 from tests.helpers import validate_grid
 
-parameters = [
+test_add_item_parameters = [
 	# Test the grid boundaries
 	(100, 100, True, (0, 0)),
 	(100, 100, True, (0, 99)),
@@ -22,7 +25,7 @@ parameters = [
 
 @pytest.mark.parametrize(
 	argnames=('w', 'h', 'successful', 'pos'),
-	argvalues=parameters)
+	argvalues=test_add_item_parameters)
 def test_add_item(w, h, successful, pos):
 	grid = Grid(width=w, height=h, spacing=100, root_node=Node2D())
 	item = Critter()
@@ -78,3 +81,65 @@ def test_random_movement_persists_safely():
 
 		# Verify that all of the critters are still around
 		assert len(list(grid)) == N_CREATURES
+
+
+test_get_grid_around_parameters = [
+	# # Basic checks at each corner-1 to check grid works normally without padding
+	((1, 1), 1, np.asarray([[0, 0, 0], [0, 1, 0], [0, 0, 0]])),
+	((2, 3), 1, np.asarray([[0, 0, 0], [0, 1, 0], [0, 0, 0]])),
+	((2, 1), 1, np.asarray([[0, 0, 0], [0, 1, 0], [0, 0, 0]])),
+	((1, 3), 1, np.asarray([[0, 0, 0], [0, 1, 0], [0, 0, 0]])),
+
+	# Check actual corners to see the grid applies padding correctl
+	((0, 0), 1, np.asarray([[-1, -1, -1], [-1, 1, 0], [-1, 0, 0]])),
+	((3, 4), 1, np.asarray([[0, 0, -1], [0, 1, -1], [-1, -1, -1]])),
+	((0, 4), 1, np.asarray([[-1, -1, -1], [0, 1, -1], [0, 0, -1]])),
+	((3, 0), 1, np.asarray([[-1, 0, 0], [-1, 1, 0], [-1, -1, -1]])),
+
+	# Check the middles of each grid edge
+	((0, 2), 1, np.asarray([[-1, -1, -1], [0, 1, 0], [0, 0, 0]])),
+	((3, 2), 1, np.asarray([[0, 0, 0], [0, 1, 0], [-1, -1, -1]])),
+	((1, 4), 1, np.asarray([[0, 0, -1], [0, 1, -1], [0, 0, -1]])),
+	((1, 0), 1, np.asarray([[-1, 0, 0], [-1, 1, 0], [-1, 0, 0]])),
+
+	# Check a radius of two near the center
+	((1, 2), 2, np.asarray([[-1, -1, -1, -1, -1],
+							[0, 0, 0, 0, 0],
+							[0, 0, 1, 0, 0],
+							[0, 0, 0, 0, 0],
+							[0, 0, 0, 0, 0]])),
+
+	# Check a large, off-center radius
+	((1, 1), 4, np.asarray([[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+							[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+							[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+							[-1, -1, -1, 0, 0, 0, 0, 0, -1],
+							[-1, -1, -1, 0, 1, 0, 0, 0, -1],
+							[-1, -1, -1, 0, 0, 0, 0, 0, -1],
+							[-1, -1, -1, 0, 0, 0, 0, 0, -1],
+							[-1, -1, -1, -1, -1, -1, -1, -1, -1],
+							[-1, -1, -1, -1, -1, -1, -1, -1, -1]]))
+]
+
+@pytest.mark.parametrize(
+	argnames=('pos', 'radius', 'output_grid'),
+	argvalues=test_get_grid_around_parameters)
+def test_get_grid_around(pos, radius, output_grid):
+	"""Creates a grid of shape:
+	[[0 0 0 0 0]
+	 [0 0 0 0 0]
+	 [0 0 0 0 0]
+	 [0 0 0 0 0]]
+
+	 and places a critter at position 'pos', then calls get_grid_around with a
+	 radius of 'radius', and verifies the output grid is the same as
+	 'output_grid'
+    """
+	# print("POS", pos)
+	grid = Grid(width=4, height=5, spacing=0, root_node=Node2D())
+	grid.add_item(Position(*pos), grid_item=Critter())
+	grid_around = grid.get_grid_around(Position(*pos), radius=radius)
+
+	h, w = grid_around.shape
+	assert h == w
+	assert (grid_around == output_grid).all()

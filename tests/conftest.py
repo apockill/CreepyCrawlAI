@@ -15,4 +15,9 @@ from crawlai.grid import Grid
 @pytest.fixture(autouse=True)
 def each_test_setup_teardown():
 	random.seed("3")
+
+	# Reset instance ID count to 0 before each test
+	import godot.bindings as bindings
+	bindings.new_instance_id = 0
+
 	yield

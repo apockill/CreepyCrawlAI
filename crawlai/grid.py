@@ -6,7 +6,7 @@ import numpy as np
 
 from crawlai.grid_item import GridItem
 from crawlai.position import Position
-
+from crawlai.math_utils import clamp
 
 class Grid:
 	def __init__(self, width, height, spacing, root_node):
@@ -41,8 +41,8 @@ class Grid:
 		x2, y2 = pos.x + radius + 1, pos.y + radius + 1
 
 		crop = self._grid[
-			   np.clip(x1, 0, self.width):np.clip(x2, 0, self.width),
-			   np.clip(y1, 0, self.height):np.clip(y2, 0, self.height)]
+			   clamp(x1, 0, self.width):clamp(x2, 0, self.width),
+			   clamp(y1, 0, self.height):clamp(y2, 0, self.height)]
 		w, h = crop.shape
 		if x1 < 0:
 			concat = np.full((abs(x1), h),

@@ -29,7 +29,7 @@ class AICritterMixin(BaseCritter):
 		- Train each step on the outcome of the scenario after running
 	"""
 	CHOICES = [Position(*c) for c in [(0, 0), (0, 1), (1, 0), (-1, 0), (0, -1)]]
-	AREA_AROUND = 10
+	AREA_AROUND = 20
 
 	def __init__(self):
 		super().__init__()

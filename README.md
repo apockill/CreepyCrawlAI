@@ -9,3 +9,7 @@ directory).
 ```bash
 pip install -r requirements.txt --target pythonscript/x11-64-cpython/lib/python3.6/site-packages
 ```
+
+## Running Tests
+All tests are under tests/. To avoid accidentally running the godot-python 
+tests, run `pytests tests/`

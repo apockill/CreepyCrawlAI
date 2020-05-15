@@ -41,7 +41,7 @@ def test_add_item(w, h, successful, pos):
 	assert added is successful
 
 	if successful:
-		assert grid._grid[pos.x][pos.y] != 0
+		assert grid.array[pos.x][pos.y] != 0
 		assert grid.id_to_pos.get(item.id) == pos
 		assert grid.id_to_obj.get(item.id) == item
 	else:
@@ -121,6 +121,7 @@ test_get_grid_around_parameters = [
 							[-1, -1, -1, -1, -1, -1, -1, -1, -1]]))
 ]
 
+
 @pytest.mark.parametrize(
 	argnames=('pos', 'radius', 'output_grid'),
 	argvalues=test_get_grid_around_parameters)
@@ -137,8 +138,11 @@ def test_get_grid_around(pos, radius, output_grid):
     """
 	# print("POS", pos)
 	grid = Grid(width=4, height=5, spacing=0, root_node=Node2D())
-	grid.add_item(Position(*pos), grid_item=Critter())
-	grid_around = grid.get_grid_around(Position(*pos), radius=radius)
+	grid.add_item(pos=Position(*pos), grid_item=Critter())
+	grid_around = Critter.get_instance_grid(
+		grid=grid,
+		pos=Position(*pos),
+		radius=radius)
 
 	h, w = grid_around.shape
 	assert h == w

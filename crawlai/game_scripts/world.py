@@ -2,6 +2,7 @@ from godot import exposed, export
 from godot.bindings import Node2D
 
 from crawlai.grid import Grid
+from crawlai.items.critter.base_critter import BaseCritter
 from crawlai.items.critter.critter import Critter
 from crawlai.items.food import Food
 
@@ -35,12 +36,12 @@ class World(Node2D):
 		moves = {}
 		# Process critter moves here, in the future in another thread
 		for grid_item in self.grid:
-			if isinstance(grid_item, Critter):
+			if isinstance(grid_item, BaseCritter):
 				moves[grid_item.id] = grid_item.get_move(self.grid)
 
 		# Actually move the critters here
 		for grid_item in self.grid:
-			if isinstance(grid_item, Critter):
+			if isinstance(grid_item, BaseCritter):
 				self.grid.move_item_relative(moves[grid_item.id], grid_item)
 
 	def _on_render_button_toggled(self, button_pressed):

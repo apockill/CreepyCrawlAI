@@ -1,5 +1,4 @@
 import pytest
-import mock
 
 from godot.bindings import Node2D
 
@@ -26,21 +25,18 @@ test_add_item_parameters = [
 	argnames=('w', 'h', 'successful', 'pos'),
 	argvalues=test_add_item_parameters)
 def test_add_item(w, h, successful, pos):
-	grid = Grid(width=w, height=h, spacing=100, root_node=Node2D())
+	grid = Grid(width=w, height=h)
 	item = Critter()
 	pos = Position(*pos)
 
-	with mock.patch.object(item.instance, 'queue_free'):
-		added = grid.add_item(pos, item)
-
-		if not successful: \
-				# Verify item is deleted if it isn't added to the grid
-			assert item.instance.queue_free.called
+	validate_grid(grid)
+	added = grid.add_item(pos, item)
+	validate_grid(grid)
 
 	assert added is successful
 
 	if successful:
-		assert grid.array[pos.x][pos.y] != 0
+		assert grid.array[pos.x][pos.y] == item.id
 		assert grid.id_to_pos.get(item.id) == pos
 		assert grid.id_to_obj.get(item.id) == item
 	else:
@@ -51,12 +47,13 @@ def test_add_item(w, h, successful, pos):
 
 def test_random_movement_persists_safely():
 	"""Test that randomly moving 'critters' will never end up being deleted
-	off of the grid"""
+	off of the grid. This method will 'tick' and move critters, running
+	validate_grid() every tick. """
 	N_CREATURES = 900
 	N_TICKS = 1000
 
 	world = Node2D()
-	grid = Grid(width=30, height=30, spacing=100, root_node=world)
+	grid = Grid(width=30, height=30)
 
 	# Populate the grid
 	for _ in range(N_CREATURES):

@@ -1,11 +1,7 @@
 from pathlib import Path
 from time import time
-import sys
 
-import tests.godot_mock
-
-# Godot bindings hack
-sys.modules["godot"] = tests.godot_mock
+from tests import monkeypatch_godot_import
 
 from crawlai.game_scripts.world import World
 from crawlai.items.critter.mixins.ai_mixin import AICritterMixin

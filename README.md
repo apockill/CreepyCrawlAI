@@ -7,7 +7,7 @@ godot-python distribution for your platform (available under the pythonscript/
 directory).
 
 ```bash
-pip install -r requirements.txt --target pythonscript/x11-64-cpython/lib/python3.6/site-packages
+pip install --upgrade -r requirements.txt --target pythonscript/x11-64-cpython/lib/python3.6/site-packages
 ```
 
 ## Running Tests

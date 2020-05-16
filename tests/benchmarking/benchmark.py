@@ -15,6 +15,7 @@ def main():
 	World.min_num_food = 500
 	World.grid_width = 250
 	World.grid_height = 250
+	World.rendering = False
 	AICritterMixin.AREA_AROUND = 30
 
 	world = World()

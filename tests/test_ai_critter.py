@@ -60,7 +60,6 @@ def test_get_grid_around(pos, radius, output_grid):
 	 radius of 'radius', and verifies the output grid is the same as
 	 'output_grid'
     """
-	# print("POS", pos)
 	grid = Grid(width=4, height=5)
 	grid.add_item(pos=Position(*pos), grid_item=Critter())
 	grid_around = Critter.get_instance_grid(

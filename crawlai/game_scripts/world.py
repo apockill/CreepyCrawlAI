@@ -77,3 +77,9 @@ class World(Node2D):
 					grid.apply_action(turn.direction, grid_item)
 				else:
 					grid.move_item_relative(turn.direction, grid_item)
+
+		# Delete any depleted objects
+		all_items = list(grid)
+		for grid_item in all_items:
+			if grid_item.delete_queued:
+				grid.delete_item(grid_item)

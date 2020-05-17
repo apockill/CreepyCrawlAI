@@ -21,3 +21,7 @@ class Food(GridItem):
 
 	def get_turn(self, grid):
 		pass
+
+	@property
+	def delete_queued(self):
+		return self.nutrition <= 0

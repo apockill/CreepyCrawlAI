@@ -24,3 +24,8 @@ class GridItem(ABC):
 	@abstractmethod
 	def get_turn(self, grid) -> Turn:
 		pass
+
+	@property
+	@abstractmethod
+	def delete_queued(self):
+		"""Whether the world should delete this object next"""

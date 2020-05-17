@@ -6,6 +6,7 @@ from crawlai.items.critter.base_critter import BaseCritter
 from crawlai.position import Position
 from crawlai.math_utils import clamp
 from crawlai.grid import Grid
+from crawlai.grid_item import Turn
 
 
 class AICritterMixin(BaseCritter):
@@ -30,7 +31,9 @@ class AICritterMixin(BaseCritter):
 		- Add a self.signal
 		- Train each step on the outcome of the scenario after running
 	"""
-	CHOICES = [Position(*c) for c in [(0, 0), (0, 1), (1, 0), (-1, 0), (0, -1)]]
+	CHOICES = [Turn(Position(*c), is_action)
+			   for c in [(0, 1), (1, 0), (-1, 0), (0, -1)]
+			   for is_action in (True, False)] + [Turn(Position(0, 0), False)]
 	AREA_AROUND = 20
 
 	def __init__(self):
@@ -69,7 +72,7 @@ class AICritterMixin(BaseCritter):
 			crop = np.hstack((crop, concat))
 		return crop
 
-	def get_move(self, grid: Grid) -> Position:
+	def get_turn(self, grid: Grid) -> Turn:
 		"""Super smart AI goes here"""
 
 		"""

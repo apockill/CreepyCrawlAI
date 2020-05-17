@@ -7,17 +7,23 @@ from crawlai.items.critter.critter import Critter
 from crawlai.game_scripts.world import World
 from crawlai.position import Position
 from crawlai.items.food import Food
+from crawlai.grid_item import Turn
 from tests.helpers import validate_grid
 
 
-def test_basic_functionality():
+def test_random_movement_persists_safely():
 	"""Basically, make sure things don't crash during normal use"""
 	world = World()
+	world.min_num_critters = 900
+	world.min_num_food = 500
+	n_ticks = 1000
+
 	world._ready()
-	n_ticks = 100
+	validate_grid(world.grid)
 
 	for i in range(0, n_ticks):
 		world._process(i)
+		validate_grid(world.grid)
 
 
 def test_add_item():
@@ -96,8 +102,8 @@ def test_critter_movement_and_actions(pos, move, expected_pos, is_action,
 	print("ayylmao", test_critter_movement_parameters)
 
 	class PresetCritter(Critter):
-		def get_move(self, inputs):
-			return Position(*move), is_action
+		def get_turn(self, inputs):
+			return Turn(Position(*move), is_action)
 
 	# Instantiate the world
 	World.grid_width = 3

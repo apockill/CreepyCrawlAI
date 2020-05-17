@@ -1,12 +1,10 @@
 import pytest
-
-from godot.bindings import Node2D
+from mock import patch
 
 from crawlai.position import Position
 from crawlai.grid import Grid
-from crawlai.items.critter.mixins.random_movement_mixin import \
-	RandomCritterMixin
 from crawlai.items.critter.critter import Critter
+from crawlai.items.food import Food
 from tests.helpers import validate_grid
 
 test_add_item_parameters = [
@@ -45,35 +43,28 @@ def test_add_item(w, h, successful, pos):
 	validate_grid(grid)
 
 
-def test_random_movement_persists_safely():
-	"""Test that randomly moving 'critters' will never end up being deleted
-	off of the grid. This method will 'tick' and move critters, running
-	validate_grid() every tick. """
-	N_CREATURES = 900
-	N_TICKS = 1000
+def test_apply_action_in_different_scenarios():
+	grid = Grid(width=3, height=3)
+	item = Critter()
+	grid.add_item(Position(0, 0), grid_item=item)
 
-	world = Node2D()
-	grid = Grid(width=30, height=30)
+	with patch.object(item, 'perform_action_onto',
+					  wraps=item.perform_action_onto) as perform_action_onto:
+		# Test applying action out of bounds fails
+		assert not grid.apply_action(Position(-1, 0), item)
+		assert not grid.apply_action(Position(-1, -1), item)
+		assert not perform_action_onto.called
 
-	# Populate the grid
-	for _ in range(N_CREATURES):
-		grid.add_item(
-			pos=grid.random_free_cell,
-			grid_item=RandomCritterMixin())
-	validate_grid(grid)
+		# Test applying action on self raises error
+		with pytest.raises(RuntimeError):
+			grid.apply_action(Position(0, 0), item)
+		assert not perform_action_onto.called
 
-	# Move creatures randomly through the grid for a while
-	for i in range(N_TICKS):
-		for item in grid:
-			item.tick()
+		# Test applying action on empty cell does nothing
+		assert not grid.apply_action(Position(1, 0), item)
+		assert not perform_action_onto.called
 
-		moves = {}
-		for item in grid:
-			moves[item.id] = item.get_move(grid)
-
-		for i, item in enumerate(grid):
-			grid.move_item_relative(moves[item.id], item)
-		validate_grid(grid)
-
-		# Verify that all of the critters are still around
-		assert len(list(grid)) == N_CREATURES
+		# Now, on the same cell, add a Food item and assert applying action runs
+		grid.add_item(Position(1, 0), Food())
+		grid.apply_action(Position(1, 0), item)
+		assert perform_action_onto.called

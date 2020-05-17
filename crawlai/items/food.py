@@ -20,3 +20,6 @@ class Food(GridItem):
 
 	def perform_action_onto(self, other: 'GridItem'):
 		pass
+
+	def get_turn(self, grid):
+		pass

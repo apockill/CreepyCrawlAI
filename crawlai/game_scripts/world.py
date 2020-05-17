@@ -5,7 +5,6 @@ from godot.bindings import Node2D, Vector2
 
 from crawlai.grid import Grid
 from crawlai.grid_item import GridItem
-from crawlai.items.critter.base_critter import BaseCritter
 from crawlai.items.critter.critter import Critter
 from crawlai.items.food import Food
 from crawlai.position import Position
@@ -65,18 +64,16 @@ class World(Node2D):
 		for grid_item in grid:
 			grid_item.tick()
 
-		moves = {}
-		# Process critter moves here, in the future in another thread
+		turns = {}
+		# Get turns here, in the future this will be threaded
 		for grid_item in grid:
-			if isinstance(grid_item, BaseCritter):
-				moves[grid_item.id] = grid_item.get_move(grid)
+			turns[grid_item.id] = grid_item.get_turn(grid)
 
-		# Actually move the critters here
+		# Actually run the turns
 		for grid_item in grid:
-			if isinstance(grid_item, BaseCritter):
-				direction, is_action = moves[grid_item.id]
-				if is_action:
-					grid.apply_action(direction, grid_item)
-				else:
-					grid.move_item_relative(direction, grid_item)
+			turn = turns[grid_item.id]
+			if turn.is_action:
+				grid.apply_action(turn.direction, grid_item)
+			else:
+				grid.move_item_relative(turn.direction, grid_item)
 

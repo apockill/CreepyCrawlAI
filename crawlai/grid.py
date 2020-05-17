@@ -38,14 +38,29 @@ class Grid:
 		assert self.try_move_item(pos, grid_item, is_new=True)
 		return True
 
-	def apply_action(self, direction: Position, grid_item: GridItem):
+	def apply_action(self, direction: Position, grid_item: GridItem) -> bool:
 		"""Applies the grid_item's action onto the grid cell that is 'direction'
-		relative to grid_item's position"""
-		action_cell = self.id_to_pos[grid_item.id] + direction
-		other_item_id = self.array[action_cell.x][action_cell.y]
+		relative to grid_item's position
+
+		:return: True if an action was performed, False if no action was
+		performed
+		"""
+
+		if direction.x == 0 and direction.y == 0:
+			raise RuntimeError("A GridItem cannot perform an action on itself!")
+
+		action_pos = self.id_to_pos[grid_item.id] + direction
+
+		try:
+			other_item_id = self.array[action_pos.x][action_pos.y]
+		except IndexError:
+			return False
+
 		if other_item_id != 0:
 			other_item = self.id_to_obj[other_item_id]
 			grid_item.perform_action_onto(other_item)
+			return True
+		return False
 
 	def move_item_relative(self, direction: Position,
 						   grid_item: GridItem) -> bool:

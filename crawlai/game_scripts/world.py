@@ -72,8 +72,8 @@ class World(Node2D):
 		# Actually run the turns
 		for grid_item in grid:
 			turn = turns[grid_item.id]
-			if turn.is_action:
-				grid.apply_action(turn.direction, grid_item)
-			else:
-				grid.move_item_relative(turn.direction, grid_item)
-
+			if turn:
+				if turn.is_action:
+					grid.apply_action(turn.direction, grid_item)
+				else:
+					grid.move_item_relative(turn.direction, grid_item)

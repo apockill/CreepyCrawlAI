@@ -1,3 +1,4 @@
+import random
 from pathlib import Path
 from time import time
 
@@ -8,6 +9,8 @@ from crawlai.items.critter.mixins.ai_mixin import AICritterMixin
 
 
 def main():
+	random.seed("benchmark")
+
 	N_TICKS = 10000
 
 	"""Set up benchmark parameters"""

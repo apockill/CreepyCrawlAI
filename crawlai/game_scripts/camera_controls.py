@@ -22,7 +22,6 @@ class PanZoomCamera(Camera2D):
 	last_mouse_pos = Vector2(0, 0)
 
 	def _ready(self):
-		world = self.get_parent()
 		self.set_process_input(True)
 		self.set_process(True)
 
@@ -36,8 +35,8 @@ class PanZoomCamera(Camera2D):
 		cur_mouse_pos = self.get_viewport().get_mouse_position()
 
 		# mouse panning
-		if (Input.is_mouse_button_pressed(BUTTON_MIDDLE) or
-				Input.is_mouse_button_pressed(BUTTON_RIGHT)):
+		if (Input.is_mouse_button_pressed(BUTTON_MIDDLE)
+				or Input.is_mouse_button_pressed(BUTTON_RIGHT)):
 			if self.last_mouse_pos != cur_mouse_pos:
 				offset = self.last_mouse_pos - cur_mouse_pos
 				self.translate(offset * self.get_zoom())

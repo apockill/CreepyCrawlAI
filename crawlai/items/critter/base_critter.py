@@ -1,10 +1,6 @@
-from typing import Tuple
-from abc import abstractmethod
-
 from godot.bindings import ResourceLoader
 
 from crawlai.grid_item import GridItem
-from crawlai.position import Position
 
 _critter_resource = ResourceLoader.load("res://Game/Critter/Critter.tscn")
 

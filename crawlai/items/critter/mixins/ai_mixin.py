@@ -75,11 +75,7 @@ class AICritterMixin(BaseCritter):
 	def get_turn(self, grid: Grid) -> Turn:
 		"""Super smart AI goes here"""
 
-		"""
-		Indexing: 
-		input[x][y][Z] where Z can be 0: Critter, 1: Food
-		"""
-		net_input = self.get_instance_grid(
+		_ = self.get_instance_grid(
 			grid=grid,
 			pos=grid.id_to_pos[self.id],
 			radius=self.AREA_AROUND)

@@ -1,5 +1,3 @@
-from crawlai.grid_item import GridItem
-
 from godot.bindings import ResourceLoader
 
 from crawlai.grid_item import GridItem

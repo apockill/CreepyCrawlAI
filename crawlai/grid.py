@@ -1,12 +1,10 @@
 import random
-from typing import Dict, Tuple
+from typing import Dict
 
-from godot.bindings import Node, Vector2
 import numpy as np
 
 from crawlai.grid_item import GridItem
 from crawlai.position import Position
-from crawlai.math_utils import clamp
 
 
 class Grid:

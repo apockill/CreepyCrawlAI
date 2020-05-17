@@ -15,3 +15,7 @@ class GridItem(ABC):
 	@abstractmethod
 	def _load_instance(self) -> Node:
 		pass
+
+	@abstractmethod
+	def perform_action_onto(self, other: 'GridItem'):
+		pass

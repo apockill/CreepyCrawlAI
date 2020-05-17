@@ -26,3 +26,6 @@ class BaseCritter(GridItem):
 
 	def _load_instance(self):
 		return _critter_resource.instance()
+
+	def perform_action_onto(self, other: 'GridItem'):
+		pass

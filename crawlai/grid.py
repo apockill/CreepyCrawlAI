@@ -38,10 +38,19 @@ class Grid:
 		assert self.try_move_item(pos, grid_item, is_new=True)
 		return True
 
-	def move_item_relative(self, rel_pos: Position,
+	def apply_action(self, direction: Position, grid_item: GridItem):
+		"""Applies the grid_item's action onto the grid cell that is 'direction'
+		relative to grid_item's position"""
+		action_cell = self.id_to_pos[grid_item.id] + direction
+		other_item_id = self.array[action_cell.x][action_cell.y]
+		if other_item_id != 0:
+			other_item = self.id_to_obj[other_item_id]
+			grid_item.perform_action_onto(other_item)
+
+	def move_item_relative(self, direction: Position,
 						   grid_item: GridItem) -> bool:
 		return self.try_move_item(
-			pos=self.id_to_pos[grid_item.id] + rel_pos,
+			pos=self.id_to_pos[grid_item.id] + direction,
 			grid_item=grid_item)
 
 	def try_move_item(self, pos: Position,

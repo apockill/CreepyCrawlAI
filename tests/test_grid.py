@@ -77,5 +77,3 @@ def test_random_movement_persists_safely():
 
 		# Verify that all of the critters are still around
 		assert len(list(grid)) == N_CREATURES
-
-

@@ -74,4 +74,9 @@ class World(Node2D):
 		# Actually move the critters here
 		for grid_item in grid:
 			if isinstance(grid_item, BaseCritter):
-				grid.move_item_relative(moves[grid_item.id], grid_item)
+				direction, is_action = moves[grid_item.id]
+				if is_action:
+					grid.apply_action(direction, grid_item)
+				else:
+					grid.move_item_relative(direction, grid_item)
+

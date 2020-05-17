@@ -1,5 +1,5 @@
 # CreepyCrawlAI
-<img align="center" src="https://github.com/apockill/CreepyCrawlAI/workflows/tests.yml/badge.svg">
+<img align="center" src="https://github.com/apockill/CreepyCrawlAI/workflows/Tests/badge.svg">
 
 Pronounced CreepyCrawl-y. 
 

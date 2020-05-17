@@ -1,4 +1,4 @@
-name: CreepyCrawlAI
+name: Tests
 
 on:
   push:

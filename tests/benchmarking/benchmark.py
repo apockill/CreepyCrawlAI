@@ -5,7 +5,7 @@ from time import time
 from tests import monkeypatch_godot_import
 
 from crawlai.game_scripts.world import World
-from crawlai.items.critter.mixins.ai_mixin import AICritterMixin
+from crawlai.items.critter.critter import Critter
 
 
 def main():
@@ -19,7 +19,10 @@ def main():
 	World.grid_width = 250
 	World.grid_height = 250
 	World.rendering = False
-	AICritterMixin.AREA_AROUND = 30
+	Critter.AREA_AROUND = 30
+
+	# Disable critters dying, to have more consistent benchmarks
+	Critter.HEALTH_TICK_PENALTY = 0
 
 	world = World()
 	world._ready()

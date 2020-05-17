@@ -1,1 +1,1 @@
-Benchmark: 89.77132639021215 Ticks per second
+Benchmark: 88.84266392691288 Ticks per second

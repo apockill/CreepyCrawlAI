@@ -6,7 +6,7 @@ from crawlai.items.critter.base_critter import BaseCritter
 from crawlai.position import Position
 from crawlai.math_utils import clamp
 from crawlai.grid import Grid
-from crawlai.grid_item import Turn
+from crawlai.turn import Turn
 
 
 class AICritterMixin(BaseCritter):

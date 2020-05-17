@@ -3,7 +3,7 @@ from godot.bindings import Input
 from crawlai.items.critter.base_critter import BaseCritter
 from crawlai import keybindings
 from crawlai.position import Position
-from crawlai.grid_item import Turn
+from crawlai.turn import Turn
 
 directions = {
 	keybindings.MOVE_UP: Position(0, -1),

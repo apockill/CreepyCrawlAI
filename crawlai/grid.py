@@ -36,6 +36,14 @@ class Grid:
 		assert self.try_move_item(pos, grid_item, is_new=True)
 		return True
 
+	def delete_item(self, grid_item: GridItem):
+		"""Dereference everything about the item, and then queue_free the
+		instance"""
+		pos = self.id_to_pos.pop(grid_item.id)
+		del self.id_to_obj[grid_item.id]
+		self.array[pos.x][pos.y] = 0
+		grid_item.instance.queue_free()
+
 	def apply_action(self, direction: Position, grid_item: GridItem) -> bool:
 		"""Applies the grid_item's action onto the grid cell that is 'direction'
 		relative to grid_item's position

@@ -7,7 +7,7 @@ from crawlai.items.critter.critter import Critter
 from crawlai.game_scripts.world import World
 from crawlai.position import Position
 from crawlai.items.food import Food
-from crawlai.grid_item import Turn
+from crawlai.turn import Turn
 from tests.helpers import validate_grid
 
 
@@ -99,8 +99,6 @@ def test_critter_movement_and_actions(pos, move, expected_pos, is_action,
 		If True, an item will be placed in the pos+move cell before the item
 		is requested to move.
 	"""
-	print("ayylmao", test_critter_movement_parameters)
-
 	class PresetCritter(Critter):
 		def get_turn(self, inputs):
 			return Turn(Position(*move), is_action)

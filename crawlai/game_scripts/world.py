@@ -59,18 +59,19 @@ class World(Node2D):
 	@staticmethod
 	def step(grid: Grid):
 		"""Perform the logic for one full grid step"""
+		all_items = list(grid)
 
 		# Run tick for all grid items
-		for grid_item in grid:
+		for grid_item in all_items:
 			grid_item.tick()
 
 		turns = {}
 		# Get turns here, in the future this will be threaded
-		for grid_item in grid:
+		for grid_item in all_items:
 			turns[grid_item.id] = grid_item.get_turn(grid)
 
 		# Actually run the turns
-		for grid_item in grid:
+		for grid_item in all_items:
 			turn = turns[grid_item.id]
 			if turn:
 				if turn.is_action:
@@ -79,7 +80,6 @@ class World(Node2D):
 					grid.move_item_relative(turn.direction, grid_item)
 
 		# Delete any depleted objects
-		all_items = list(grid)
 		for grid_item in all_items:
 			if grid_item.delete_queued:
 				grid.delete_item(grid_item)

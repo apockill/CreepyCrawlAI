@@ -22,12 +22,11 @@ def test_dies_of_hunger():
 	assert len(list(world.grid)) == 1
 	critter: Critter = list(world.grid)[0]
 
-	n_steps_till_death = (Critter.HUNGER_PENALTY_START
-						  + (Critter.MAX_HEALTH / Critter.HUNGER_PENALTY))
+	n_steps_till_death = int(Critter.MAX_HEALTH / Critter.HEALTH_TICK_PENALTY)
 
 	with patch.object(world.grid, 'delete_item',
 					  wraps=world.grid.delete_item) as delete_item:
-		for i in range(int(n_steps_till_death - 1)):
+		for i in range(n_steps_till_death - 1):
 			world._process(0)
 			assert not delete_item.called
 			validate_grid(world.grid)

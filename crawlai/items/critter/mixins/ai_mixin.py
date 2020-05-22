@@ -1,10 +1,7 @@
 import random
 
-import numpy as np
-
 from crawlai.items.critter.base_critter import BaseCritter
 from crawlai.position import Position
-from crawlai.math_utils import clamp
 from crawlai.grid import Grid
 from crawlai.turn import Turn
 from crawlai.model.extract_inputs import get_instance_grid

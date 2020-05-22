@@ -32,8 +32,8 @@ def main():
 		world._process(0)
 	tps = N_TICKS / (time() - start)
 
-	with Path("tests/benchmarking/benchmark.txt").open("w") as f:
-		f.write(f"Benchmark: {tps} Ticks per second")
+	with Path("tests/benchmarking/benchmark.txt").open("a") as f:
+		f.write(f"\nBenchmark: {tps} Ticks per second")
 
 
 if __name__ == "__main__":

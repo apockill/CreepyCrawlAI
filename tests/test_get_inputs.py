@@ -3,6 +3,7 @@ import pytest
 from godot.bindings import Node2D
 import numpy as np
 
+from crawlai.model import extract_inputs
 from crawlai.grid import Grid
 from crawlai.items.critter.critter import Critter
 from crawlai.position import Position
@@ -62,7 +63,7 @@ def test_get_grid_around(pos, radius, output_grid):
     """
 	grid = Grid(width=4, height=5)
 	grid.add_item(pos=Position(*pos), grid_item=Critter())
-	grid_around = Critter.get_instance_grid(
+	grid_around = extract_inputs.get_instance_grid(
 		grid=grid,
 		pos=Position(*pos),
 		radius=radius)

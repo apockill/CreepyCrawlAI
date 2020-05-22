@@ -1,1 +1,21 @@
-Benchmark: 88.84266392691288 Ticks per second
+# Baseline
+Benchmark: 82.46582048829082 Ticks per second
+Benchmark: 83.73573399685186 Ticks per second
+
+# grid.array changed from np.int => np.int32
+Benchmark: 79.17097619206078 Ticks per second
+Benchmark: 80.4612998091525 Ticks per second
+
+# get_input moved from AICritterMixin to extract_inputs.py
+Benchmark: 71.44641944991297 Ticks per second
+Benchmark: 67.41602922698988 Ticks per second
+
+# removed np.issubclass assertion
+Benchmark: 77.39767401269349 Ticks per second
+
+
+# Change INPUT_DTYPE to from np.int32 => np.int8
+Benchmark: 77.74957404561201 Ticks per second
+
+# Change grid dtype np.int32 => np.int_, and change INPUT_DTYPE np.in8 => np.int_
+Benchmark: 84.72405855143349 Ticks per second

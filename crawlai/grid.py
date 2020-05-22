@@ -14,7 +14,7 @@ class Grid:
 		self.height: int = height
 
 		# Grid state
-		self.array: np.ndarray = np.zeros(shape=(width, height), dtype=np.int)
+		self.array: np.ndarray = np.zeros(shape=(width, height), dtype=np.int_)
 		"""Holds the instance ids of each object. 0 means empty"""
 		self.id_to_obj: Dict[int, GridItem] = {}
 		self.id_to_pos: Dict[int, Position] = {}

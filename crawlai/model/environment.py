@@ -9,9 +9,8 @@ class CritterEnvironment(PyEnvironment):
 
 	def __init__(self):
 		super().__init__()
-		self._observation_spec = array_spec.BoundedArraySpec(
+		self._observation_spec = array_spec.ArraySpec(
 			shape=INPUT_SHAPE, dtype=INPUT_DTYPE,
-			minimum=0, maximum=3,
 			name="observation")
 
 		# TODO: Figure out how to get len(AiCritterMixin.CHOICES)
@@ -35,6 +34,7 @@ class CritterEnvironment(PyEnvironment):
 
 		See `reset(self)` docstring for more details
 		"""
+		raise NotImplementedError()
 
 	def observation_spec(self):
 		"""Defines the observations provided by the environment.
@@ -45,6 +45,7 @@ class CritterEnvironment(PyEnvironment):
 		Returns:
 		  An `ArraySpec`, or a nested dict, list or tuple of `ArraySpec`s.
 		"""
+
 		return self._observation_spec
 
 	def action_spec(self):

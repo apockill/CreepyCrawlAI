@@ -1,27 +1,10 @@
 # Baseline
-Benchmark: 84.72405855143349 Ticks per second
-Benchmark: 83.65492471203571 Ticks per second
-
-# Added TFPyEnvironment(CritterEnvironment()) to AICritterMixin.__init__()
-Benchmark: 66.48853290282408 Ticks per second
-# Removed silly assertion   # NEXT: Don't wrap in TFPyEnvironment
-Benchmark: 71.63421220205517 Ticks per second
-# Re-added assertion
-Benchmark: 68.91523383223137 Ticks per second
-
-# Removed TFPyEnvironment wrapper
-Benchmark: 84.79261428913229 Ticks per second
-Benchmark: 84.94680996658464 Ticks per second
-
-# Added the initialization of QNetwork
-Benchmark: 88.03979599009642 Ticks per second
-Benchmark: 82.34667252870702 Ticks per second]
-
-# Re-added TFPyEnvironment
-64.??
-
-# Add a dedicated isolation threadpool
 Benchmark: 82.14672914395089 Ticks per second
 Benchmark: 84.14525310142962 Ticks per second
 Benchmark: 83.16035092726548 Ticks per second
 Benchmark: 83.68756021927561 Ticks per second
+
+# Added self.agent.initialize() to the AICritterMixin.__init__()
+Benchmark: 86.76890466579226 Ticks per second
+Benchmark: 85.80717338652109 Ticks per second
+Benchmark: 85.67123937228179 Ticks per second

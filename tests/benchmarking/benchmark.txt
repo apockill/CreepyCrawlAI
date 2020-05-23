@@ -23,3 +23,5 @@ Benchmark: 82.34667252870702 Ticks per second]
 # Add a dedicated isolation threadpool
 Benchmark: 82.14672914395089 Ticks per second
 Benchmark: 84.14525310142962 Ticks per second
+Benchmark: 83.16035092726548 Ticks per second
+Benchmark: 83.68756021927561 Ticks per second

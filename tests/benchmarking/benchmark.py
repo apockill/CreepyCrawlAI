@@ -6,7 +6,7 @@ from tests import monkeypatch_godot_import
 
 from crawlai.game_scripts.world import World
 from crawlai.items.critter.critter import Critter
-
+from crawlai import model
 
 def main():
 	random.seed("benchmark")
@@ -19,7 +19,7 @@ def main():
 	World.grid_width = 250
 	World.grid_height = 250
 	World.rendering = False
-	Critter.AREA_AROUND = 30
+	model.extract_inputs._INPUT_RADIUS = 30
 
 	# Disable critters dying, to have more consistent benchmarks
 	Critter.HEALTH_TICK_PENALTY = 0

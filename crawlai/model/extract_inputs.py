@@ -4,9 +4,6 @@ from crawlai.grid import Grid
 from crawlai.position import Position
 from crawlai.math_utils import clamp
 
-_INPUT_RADIUS = 30
-INPUT_SHAPE = (_INPUT_RADIUS * 2 + 1,
-			   _INPUT_RADIUS * 2 + 1)
 INPUT_DTYPE = np.int_
 
 

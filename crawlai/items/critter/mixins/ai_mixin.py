@@ -12,7 +12,7 @@ from crawlai.position import Position
 from crawlai.grid import Grid
 from crawlai.turn import Turn
 from crawlai.model.environment import CritterEnvironment
-from crawlai.model.extract_inputs import get_instance_grid
+from crawlai.model import extract_inputs
 
 threadpool = None
 """This is a shared threadpool by all AICritterMixins"""
@@ -22,13 +22,17 @@ class AICritterMixin(BaseCritter):
 	CHOICES = [Turn(Position(*c), is_action)
 			   for c in [(0, 1), (1, 0), (-1, 0), (0, -1)]
 			   for is_action in (True, False)] + [Turn(Position(0, 0), False)]
+	INPUT_RADIUS = 30
 
 	def __init__(self, environment: CritterEnvironment = None):
 		super().__init__()
 		if environment is None:
 			global threadpool
 			threadpool = threadpool or ThreadPool(processes=1)
-			environment = CritterEnvironment()
+			environment = CritterEnvironment(
+				input_radius=self.INPUT_RADIUS,
+				input_dtype=extract_inputs.INPUT_DTYPE,
+				n_choices=len(self.CHOICES))
 			environment = TFPyEnvironment(environment, isolation=threadpool)
 			assert len(self.CHOICES) == environment.action_spec()[0].maximum
 		self.environment: TFPyEnvironment = environment
@@ -49,9 +53,10 @@ class AICritterMixin(BaseCritter):
 
 	def get_turn(self, grid: Grid) -> Turn:
 		"""Super smart AI goes here"""
-		observation = get_instance_grid(
+		observation = extract_inputs.get_instance_grid(
 			grid=grid,
-			pos=grid.id_to_pos[self.id])
+			pos=grid.id_to_pos[self.id],
+			radius=self.INPUT_RADIUS)
 
 		if self.timestep is None:
 			# Initialize the first timestep

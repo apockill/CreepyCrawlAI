@@ -2,21 +2,21 @@ import numpy as np
 from tf_agents.environments.py_environment import PyEnvironment
 from tf_agents.specs import array_spec
 
-from crawlai.model.extract_inputs import INPUT_SHAPE, INPUT_DTYPE
-
 
 class CritterEnvironment(PyEnvironment):
 
-	def __init__(self):
+	def __init__(self, input_radius, input_dtype, n_choices):
 		super().__init__()
+		input_shape = (input_radius * 2 + 1,
+					   input_radius * 2 + 1)
 		self._observation_spec = array_spec.ArraySpec(
-			shape=INPUT_SHAPE, dtype=INPUT_DTYPE,
+			shape=input_shape, dtype=input_dtype,
 			name="observation")
 
 		# TODO: Figure out how to get len(AiCritterMixin.CHOICES)
 		self._action_spec = [array_spec.BoundedArraySpec(
 			shape=(), dtype=np.int32,
-			minimum=0, maximum=9,
+			minimum=0, maximum=n_choices - 1,
 			name=f"action")]
 
 	def _step(self, action):

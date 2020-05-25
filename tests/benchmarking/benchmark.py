@@ -35,7 +35,7 @@ def main():
 	start = time()
 	for _ in IncrementalBar().iter(list(range(N_TICKS))):
 		world._process(0)
-	tps = N_TICKS / (time() - start)
+	tps = round(N_TICKS / (time() - start), 3)
 
 	with Path("tests/benchmarking/benchmark.txt").open("a") as f:
 		report = f"\nBenchmark: {tps} Ticks per second. Samples: {N_TICKS}"

@@ -26,3 +26,11 @@ Benchmark: 46.590810631355914 Ticks per second. Samples: 10000
 # Made discount a constant
 Benchmark: 49.56495405463249 Ticks per second. Samples: 10000
 Benchmark: 49.63295134449488 Ticks per second. Samples: 10000
+
+# Made CritterEnvironment report itself as 'batched', to simplify TFPyEnvironment logic
+Benchmark: 49.8356199610798 Ticks per second. Samples: 10000
+
+# Changed isolation=False on the TFPyEnvironment
+Benchmark: 47.65844087132541 Ticks per second. Samples: 1000
+Benchmark: 48.637536834117874 Ticks per second. Samples: 1000
+Benchmark: 48.311431553764486 Ticks per second. Samples: 10000

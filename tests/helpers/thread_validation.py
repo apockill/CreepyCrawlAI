@@ -20,5 +20,5 @@ def verify_all_threads_closed(allowable_threads=None):
 
 	if len(open_threads) != 0:
 		raise EnvironmentError(
-			"Not all threads were shut down! Currently running threads: " +
-			str(open_threads))
+			"Not all threads were shut down! Currently running threads: "
+			+ str(open_threads))

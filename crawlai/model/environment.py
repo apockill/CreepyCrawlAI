@@ -17,7 +17,7 @@ class CritterEnvironment(PyEnvironment):
 		self._action_spec = [array_spec.BoundedArraySpec(
 			shape=(), dtype=np.int32,
 			minimum=0, maximum=n_choices - 1,
-			name=f"action")]
+			name="action")]
 
 	@property
 	def batched(self):

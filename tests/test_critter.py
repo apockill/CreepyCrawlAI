@@ -20,7 +20,6 @@ def test_dies_of_hunger():
 	world._ready()
 
 	assert len(list(world.grid)) == 1
-	critter: Critter = list(world.grid)[0]
 
 	n_steps_till_death = int(Critter.MAX_HEALTH / Critter.HEALTH_TICK_PENALTY)
 
@@ -53,7 +52,8 @@ def test_consumes_food_then_dies():
 	critter: FoodEater = world.add_item(Position(1, 1), item_type=FoodEater)
 	food: Food = world.add_item(Position(2, 1), item_type=Food)
 
-	n_steps_till_food_depleted = int(Food.MAX_NUTRITION / Critter.HEALTH_TICK_PENALTY)
+	n_steps_till_food_depleted = int(Food.MAX_NUTRITION
+									 / Critter.HEALTH_TICK_PENALTY)
 	n_steps_till_death = int(Critter.MAX_HEALTH / Critter.HEALTH_TICK_PENALTY)
 	with patch.object(world.grid, 'delete_item',
 					  wraps=world.grid.delete_item) as delete_item:

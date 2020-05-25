@@ -1,6 +1,5 @@
 import pytest
 
-from godot.bindings import Node2D
 import numpy as np
 
 from crawlai.model import extract_inputs

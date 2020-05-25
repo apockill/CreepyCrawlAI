@@ -1,5 +1,4 @@
 import random
-from multiprocessing.pool import ThreadPool
 
 import numpy as np
 import tensorflow as tf

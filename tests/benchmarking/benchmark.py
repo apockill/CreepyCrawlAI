@@ -8,14 +8,13 @@ from progress.bar import IncrementalBar
 from tests import monkeypatch_godot_import
 from crawlai.game_scripts.world import World
 from crawlai.items.critter.critter import Critter
-from crawlai import model
 
 
 def main():
 	tf.random.set_seed(1)
 	random.seed("benchmark")
 
-	N_TICKS = 100
+	N_TICKS = 10000
 
 	"""Set up benchmark parameters"""
 	World.min_num_critters = 1000
@@ -39,7 +38,7 @@ def main():
 	tps = N_TICKS / (time() - start)
 
 	with Path("tests/benchmarking/benchmark.txt").open("a") as f:
-		report = f"\nBenchmark: {tps} Ticks per second"
+		report = f"\nBenchmark: {tps} Ticks per second. Samples: {N_TICKS}"
 		f.write(report)
 		print(report)
 

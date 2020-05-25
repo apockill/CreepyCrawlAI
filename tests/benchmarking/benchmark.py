@@ -14,7 +14,7 @@ def main():
 	tf.random.set_seed(1)
 	random.seed("benchmark")
 
-	N_TICKS = 10000
+	N_TICKS = 30
 
 	"""Set up benchmark parameters"""
 	World.min_num_critters = 1000
@@ -30,6 +30,10 @@ def main():
 	print("Initializing Creatures...")
 	world = World()
 	world._ready()
+
+	# Sometimes the first tick takes a while (tensorflow allocating memory, etc)
+	print("Warming up...")
+	world._process(0)
 
 	print("Beginning Benchmark...")
 	start = time()

@@ -6,7 +6,7 @@ import tensorflow as tf
 from tf_agents.agents.dqn.dqn_agent import DqnAgent
 from tf_agents.networks.q_network import QNetwork
 from tf_agents.environments.tf_py_environment import TFPyEnvironment
-from tf_agents.trajectories import time_step
+from tf_agents.trajectories.time_step import StepType, TimeStep
 from tf_agents.utils import nest_utils
 
 from crawlai.items.critter.base_critter import BaseCritter
@@ -19,12 +19,24 @@ from crawlai.model import extract_inputs
 threadpool = None
 """This is a shared threadpool by all AICritterMixins"""
 
+DISCOUNT = np.array([1.0])
+"""Since we never change this value, it's more performant to create this array
+once and never change it. """
+
 
 class AICritterMixin(BaseCritter):
 	CHOICES = [Turn(Position(*c), is_action)
 			   for c in [(0, 1), (1, 0), (-1, 0), (0, -1)]
 			   for is_action in (True, False)] + [Turn(Position(0, 0), False)]
 	INPUT_RADIUS = 30
+
+	# Step type constants
+	class _BatchedStepType:
+		"""Optimize away the expanding of dimensions when creating a 'batched'
+		timestep of batch size 1."""
+		FIRST = np.expand_dims(StepType.FIRST, axis=0)
+		MID = np.expand_dims(StepType.MID, axis=0)
+		LAST = np.expand_dims(StepType.LAST, axis=0)
 
 	def __init__(self, environment: CritterEnvironment = None):
 		super().__init__()
@@ -58,16 +70,15 @@ class AICritterMixin(BaseCritter):
 			grid=grid,
 			pos=grid.id_to_pos[self.id],
 			radius=self.INPUT_RADIUS)
+		reward = self.age
+		step_type = (self._BatchedStepType.MID if self.timestep
+					 else self._BatchedStepType.FIRST)
 
-		if self.timestep is None:
-			# Initialize the first timestep
-			self.timestep = time_step.restart(observation=observation)
-		else:
-			self.timestep = time_step.transition(
-				observation=observation,
-				reward=float(self.age),
-				discount=1.0)
+		self.timestep = TimeStep(
+			step_type=step_type,
+			reward=np.array([reward]),
+			observation=np.expand_dims(observation, axis=0),
+			discount=DISCOUNT)
 
-		# Prepare a 'batched timestep'
-		ts = nest_utils.stack_nested_arrays([self.timestep])
-		return self.CHOICES[ts[0][0]]
+		# return self.CHOICES[ts[0][0]]
+		return random.choice(self.CHOICES)

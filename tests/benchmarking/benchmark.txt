@@ -3,7 +3,7 @@ Benchmark: 85.55833476464188 Ticks per second
 Benchmark: 85.49006163439688 Ticks per second
 Benchmark: 85.95276260518409 Ticks per second
 
-# Create timesteps
+# Create timestep
 Benchmark: 54.64337295841542 Ticks per second
 Benchmark: 52.63770589527186 Ticks per second
 Benchmark: 55.26770876212995 Ticks per second
@@ -13,3 +13,16 @@ Benchmark: 19.247741365083595 Ticks per second
 Benchmark: 18.94886165984334 Ticks per second
 Benchmark: 19.719857275065582 Ticks per second
 Benchmark: 19.085732274068544 Ticks per second
+
+# After optimizing away nest_utils.stack_nested_arrays
+Benchmark: 42.800771745864296 Ticks per second
+Benchmark: 40.614720930663125 Ticks per second. Samples: 10000
+
+# Added a _BatchedStepType with pre-batched StepType
+Benchmark: 46.72786600479967 Ticks per second. Samples: 100
+Benchmark: 45.91641967215053 Ticks per second. Samples: 10000
+Benchmark: 46.590810631355914 Ticks per second. Samples: 10000
+
+# Made discount a constant
+Benchmark: 49.56495405463249 Ticks per second. Samples: 10000
+Benchmark: 49.63295134449488 Ticks per second. Samples: 10000

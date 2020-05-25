@@ -7,7 +7,6 @@ from tf_agents.agents.dqn.dqn_agent import DqnAgent
 from tf_agents.networks.q_network import QNetwork
 from tf_agents.environments.tf_py_environment import TFPyEnvironment
 from tf_agents.trajectories.time_step import StepType, TimeStep
-from tf_agents.utils import nest_utils
 
 from crawlai.items.critter.base_critter import BaseCritter
 from crawlai.position import Position
@@ -15,9 +14,6 @@ from crawlai.grid import Grid
 from crawlai.turn import Turn
 from crawlai.model.environment import CritterEnvironment
 from crawlai.model import extract_inputs
-
-threadpool = None
-"""This is a shared threadpool by all AICritterMixins"""
 
 DISCOUNT = np.array([1.0])
 """Since we never change this value, it's more performant to create this array
@@ -42,12 +38,11 @@ class AICritterMixin(BaseCritter):
 		super().__init__()
 		if environment is None:
 			global threadpool
-			threadpool = threadpool or ThreadPool(processes=1)
 			environment = CritterEnvironment(
 				input_radius=self.INPUT_RADIUS,
 				input_dtype=extract_inputs.INPUT_DTYPE,
 				n_choices=len(self.CHOICES))
-			environment = TFPyEnvironment(environment, isolation=threadpool)
+			environment = TFPyEnvironment(environment, isolation=False)
 		self.environment: TFPyEnvironment = environment
 		self.timestep = None
 

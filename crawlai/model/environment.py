@@ -19,6 +19,20 @@ class CritterEnvironment(PyEnvironment):
 			minimum=0, maximum=n_choices - 1,
 			name=f"action")]
 
+	@property
+	def batched(self):
+		"""By saying we are batched, then when TFPyEnvironment wraps this class
+		it won't bother re-wrapping this environment in a BatchedPyEnvironment.
+		"""
+		return True
+
+	@property
+	def batch_size(self):
+		"""By saying we are batched, then when TFPyEnvironment wraps this class
+		it won't bother re-wrapping this environment in a BatchedPyEnvironment.
+		"""
+		return 1
+
 	def _step(self, action):
 		"""Updates the environment according to action and returns a `TimeStep`.
 

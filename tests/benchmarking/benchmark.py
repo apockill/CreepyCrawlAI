@@ -2,17 +2,20 @@ import random
 from pathlib import Path
 from time import time
 
-from tests import monkeypatch_godot_import
+import tensorflow as tf
+from progress.bar import IncrementalBar
 
+from tests import monkeypatch_godot_import
 from crawlai.game_scripts.world import World
 from crawlai.items.critter.critter import Critter
 from crawlai import model
 
 
 def main():
+	tf.random.set_seed(1)
 	random.seed("benchmark")
 
-	N_TICKS = 10000
+	N_TICKS = 100
 
 	"""Set up benchmark parameters"""
 	World.min_num_critters = 1000
@@ -25,16 +28,20 @@ def main():
 	# Disable critters dying, to have more consistent benchmarks
 	Critter.HEALTH_TICK_PENALTY = 0
 
+	print("Initializing Creatures...")
 	world = World()
 	world._ready()
 
+	print("Beginning Benchmark...")
 	start = time()
-	for i in range(N_TICKS):
+	for _ in IncrementalBar().iter(list(range(N_TICKS))):
 		world._process(0)
 	tps = N_TICKS / (time() - start)
 
 	with Path("tests/benchmarking/benchmark.txt").open("a") as f:
-		f.write(f"\nBenchmark: {tps} Ticks per second")
+		report = f"\nBenchmark: {tps} Ticks per second"
+		f.write(report)
+		print(report)
 
 
 if __name__ == "__main__":

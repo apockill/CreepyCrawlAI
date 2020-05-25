@@ -4,6 +4,7 @@ import pytest
 from godot.bindings import Node
 
 from crawlai.items.critter.critter import Critter
+from crawlai.items.critter.base_critter import BaseCritter
 from crawlai.game_scripts.world import World
 from crawlai.position import Position
 from crawlai.items.food import Food
@@ -11,18 +12,32 @@ from crawlai.turn import Turn
 from tests.helpers import validate_grid
 
 
-def test_random_movement_persists_safely():
+@pytest.fixture
+def undying_base_critter_type():
+	"""Modifies the BaseCritter class to never die"""
+	original_tick_penalty = BaseCritter.HEALTH_TICK_PENALTY
+	yield BaseCritter
+	BaseCritter.HEALTH_TICK_PENALTY = original_tick_penalty
+
+
+def test_random_movement_persists_safely(undying_base_critter_type):
 	"""Basically, make sure things don't crash during normal use"""
 	world = World()
 	world.min_num_critters = 900
 	world.min_num_food = 500
-	n_ticks = 1000
+	world.grid_height = 50
+	world.grid_width = 40
+	n_ticks = 100
 
 	world._ready()
 	validate_grid(world.grid)
 
+	# Simulate the world for various ticks, asserting that the board state
+	# is changing between ticks (very, _very_ unlikely that it doesn't)
 	for i in range(0, n_ticks):
+		state_before = world.grid.array.copy()
 		world._process(i)
+		assert (state_before != world.grid.array).any()
 		validate_grid(world.grid)
 
 
@@ -99,6 +114,7 @@ def test_critter_movement_and_actions(pos, move, expected_pos, is_action,
 		If True, an item will be placed in the pos+move cell before the item
 		is requested to move.
 	"""
+
 	class PresetCritter(Critter):
 		def get_turn(self, inputs):
 			return Turn(Position(*move), is_action)

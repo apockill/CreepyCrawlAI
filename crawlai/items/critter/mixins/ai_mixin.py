@@ -1,11 +1,13 @@
 import random
 from multiprocessing.pool import ThreadPool
 
+import numpy as np
 import tensorflow as tf
 from tf_agents.agents.dqn.dqn_agent import DqnAgent
 from tf_agents.networks.q_network import QNetwork
 from tf_agents.environments.tf_py_environment import TFPyEnvironment
 from tf_agents.trajectories import time_step
+from tf_agents.utils import nest_utils
 
 from crawlai.items.critter.base_critter import BaseCritter
 from crawlai.position import Position
@@ -34,7 +36,6 @@ class AICritterMixin(BaseCritter):
 				input_dtype=extract_inputs.INPUT_DTYPE,
 				n_choices=len(self.CHOICES))
 			environment = TFPyEnvironment(environment, isolation=threadpool)
-			assert len(self.CHOICES) == environment.action_spec()[0].maximum
 		self.environment: TFPyEnvironment = environment
 		self.timestep = None
 
@@ -61,12 +62,12 @@ class AICritterMixin(BaseCritter):
 		if self.timestep is None:
 			# Initialize the first timestep
 			self.timestep = time_step.restart(observation=observation)
-			print("First time step", self.timestep)
 		else:
 			self.timestep = time_step.transition(
 				observation=observation,
 				reward=float(self.age),
 				discount=1.0)
-		# TODO: This fails:
-		action = self.agent.policy.action(self.timestep)
-		return action
+
+		# Prepare a 'batched timestep'
+		ts = nest_utils.stack_nested_arrays([self.timestep])
+		return self.CHOICES[ts[0][0]]

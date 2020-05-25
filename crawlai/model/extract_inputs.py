@@ -10,11 +10,10 @@ INPUT_DTYPE = np.int_
 def get_instance_grid(
 		grid: Grid,
 		pos: Position,
-		radius=_INPUT_RADIUS) -> np.ndarray:
+		radius: int) -> np.ndarray:
 	"""Get a numpy array of obj IDs surrounding a particular area.
 	This function will always return an array of shape (radius, radius),
 	where the value is the object ID. """
-
 	x1, y1 = pos.x - radius, pos.y - radius
 	x2, y2 = pos.x + radius + 1, pos.y + radius + 1
 

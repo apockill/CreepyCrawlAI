@@ -30,7 +30,6 @@ class AICritterMixin(BaseCritter):
 	def __init__(self, environment: CritterEnvironment = None):
 		super().__init__()
 		if environment is None:
-			global threadpool
 			environment = CritterEnvironment(
 				input_radius=self.INPUT_RADIUS,
 				input_dtype=extract_inputs.INPUT_DTYPE,

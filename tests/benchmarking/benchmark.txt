@@ -35,3 +35,6 @@ Benchmark: 3.577 Ticks per second. Samples: 700
 # 1k Critters, ThreadPool(processes=None)
 Benchmark: 3.528 Ticks per second. Samples: 700
 Benchmark: 3.425 Ticks per second. Samples: 700
+
+# Switched get_turn to be backed by a generator
+Benchmark: 3.499 Ticks per second. Samples: 700

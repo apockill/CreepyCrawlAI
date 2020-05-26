@@ -14,10 +14,6 @@ from crawlai.turn import Turn
 from crawlai.model.environment import CritterEnvironment
 from crawlai.model import extract_inputs
 
-DISCOUNT = np.array([1.0])
-"""Since we never change this value, it's more performant to create this array
-once and never change it. """
-
 
 class AICritterMixin(BaseCritter):
 	CHOICES = [Turn(Position(*c), is_action)
@@ -43,7 +39,6 @@ class AICritterMixin(BaseCritter):
 				n_choices=len(self.CHOICES))
 			environment = TFPyEnvironment(environment, isolation=False)
 		self.environment: TFPyEnvironment = environment
-		self.timestep = None
 
 		learning_rate = 1e-3
 
@@ -58,21 +53,39 @@ class AICritterMixin(BaseCritter):
 				learning_rate=learning_rate))
 		self.agent.initialize()
 
+		def get_action(step_type, reward, observation):
+			expanded_obs = tf.expand_dims(observation, axis=0)
+			expanded_reward = tf.convert_to_tensor([reward])
+			timestep = TimeStep(
+				step_type=step_type,
+				reward=expanded_reward,
+				observation=expanded_obs,
+				discount=np.array([1.0]))
+			return self.agent.policy.action(timestep)[0][0]
+
+		# Wrap get_action as a tensorflow function, which greatly increases
+		# execution speed
+		self._get_action = tf.function(
+			func=get_action,
+			input_signature=[
+				tf.TensorSpec(shape=(1,), dtype=tf.int32, name="step_type"),
+				tf.TensorSpec(shape=(), dtype=tf.float32, name="reward"),
+				self.environment.observation_spec()],
+			autograph=True,
+			# experimental_compile=True seems to slow down on GPU
+			experimental_compile=False)
+
 	def get_turn(self, grid: Grid) -> Turn:
 		"""Super smart AI goes here"""
 		observation = extract_inputs.get_instance_grid(
 			grid=grid,
 			pos=grid.id_to_pos[self.id],
 			radius=self.INPUT_RADIUS)
-		reward = self.age
-		step_type = (self._BatchedStepType.MID if self.timestep
+		step_type = (self._BatchedStepType.MID if self.age == 0
 					 else self._BatchedStepType.FIRST)
 
-		self.timestep = TimeStep(
+		choice = int(self._get_action(
 			step_type=step_type,
-			reward=np.array([reward]),
-			observation=np.expand_dims(observation, axis=0),
-			discount=DISCOUNT)
-
-		# return self.CHOICES[ts[0][0]]
-		return random.choice(self.CHOICES)
+			reward=self.age,
+			observation=observation))
+		return self.CHOICES[choice]

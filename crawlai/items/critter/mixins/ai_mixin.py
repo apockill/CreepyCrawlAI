@@ -1,3 +1,5 @@
+from typing import Iterator
+
 import numpy as np
 import tensorflow as tf
 from tf_agents.agents.dqn.dqn_agent import DqnAgent
@@ -29,6 +31,9 @@ class AICritterMixin(BaseCritter):
 
 	def __init__(self, environment: CritterEnvironment = None):
 		super().__init__()
+		self._move_loop_generator = None
+		"""Created on first call of self.next_step"""
+
 		if environment is None:
 			environment = CritterEnvironment(
 				input_radius=self.INPUT_RADIUS,
@@ -73,16 +78,23 @@ class AICritterMixin(BaseCritter):
 			experimental_compile=False)
 
 	def get_turn(self, grid: Grid) -> Turn:
-		"""Super smart AI goes here"""
-		observation = extract_inputs.get_instance_grid(
-			grid=grid,
-			pos=grid.id_to_pos[self.id],
-			radius=self.INPUT_RADIUS)
-		step_type = (self._BatchedStepType.MID if self.age == 0
-					 else self._BatchedStepType.FIRST)
+		if self._move_loop_generator is None:
+			self._move_loop_generator = self._move_loop(grid)
+		return next(self._move_loop_generator)
 
-		choice = int(self._get_action(
-			step_type=step_type,
-			reward=self.age,
-			observation=observation))
-		return self.CHOICES[choice]
+	def _move_loop(self, grid: Grid) -> Iterator[Turn]:
+		"""Super smart AI goes here"""
+		while True:
+			observation = extract_inputs.get_instance_grid(
+				grid=grid,
+				pos=grid.id_to_pos[self.id],
+				radius=self.INPUT_RADIUS)
+			step_type = (self._BatchedStepType.MID if self.age == 0
+						 else self._BatchedStepType.FIRST)
+
+			choice = int(self._get_action(
+				step_type=step_type,
+				reward=self.age,
+				observation=observation))
+
+			yield self.CHOICES[choice]

@@ -1,5 +1,5 @@
-from typing import Type, Optional, List
-from concurrent.futures import ThreadPoolExecutor, Future
+from typing import Type, Optional
+from multiprocessing.pool import ThreadPool
 
 from godot import exposed, export
 from godot.bindings import Node2D, Vector2
@@ -30,11 +30,10 @@ class World(Node2D):
 			self.add_item(self.grid.random_free_cell, Food)
 		print("Created", self.min_num_critters, "Critters")
 		print("Created", self.min_num_food, "Foods")
-		self.executor = ThreadPoolExecutor(
-			thread_name_prefix="WorldThread")
+		self.pool = ThreadPool()
 
 	def _process(self, delta=None):
-		self.step(self.grid, self.executor)
+		self.step(self.grid, self.pool)
 
 		# Render all sprites
 		if self.rendering:
@@ -60,7 +59,7 @@ class World(Node2D):
 			return None
 
 	@staticmethod
-	def step(grid: Grid, executor: ThreadPoolExecutor):
+	def step(grid: Grid, pool: ThreadPool):
 		"""Perform the logic for one full grid step"""
 		all_items = list(grid)
 
@@ -68,15 +67,8 @@ class World(Node2D):
 		for grid_item in all_items:
 			grid_item.tick()
 
-		futures: List[Future] = []
-		"""An index-corresponding list to all_items"""
-
 		# Get turns here, in the future this will be threaded
-		for grid_item in all_items:
-			futures.append(executor.submit(grid_item.get_turn, grid))
-
-		# Wait for turn computation to be finished
-		turns = [future.result() for future in futures]
+		turns = pool.map(lambda gi: gi.get_turn(grid), all_items)
 
 		# Run the moves on the grid
 		for grid_item, turn in zip(all_items, turns):
@@ -92,4 +84,4 @@ class World(Node2D):
 				grid.delete_item(grid_item)
 
 	def close(self):
-		self.executor.shutdown()
+		self.pool.terminate()

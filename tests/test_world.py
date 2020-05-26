@@ -146,7 +146,7 @@ def test_critter_movement_and_actions(pos, move, expected_pos, is_action,
 				assert not move_item.called
 				assert not apply_action.called
 				assert not perform_action.called
-				world.step(world.grid, world.executor)
+				world.step(world.grid, world.pool)
 
 				# Apply action should always be called when a creature says
 				# it wants to make an action

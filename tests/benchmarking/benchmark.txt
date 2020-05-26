@@ -7,3 +7,31 @@ Benchmark: 2.959 Ticks per second. Samples: 30
 
 # ThreadPoolExecutor()  with no max_workers specified
 Benchmark: 3.006 Ticks per second. Samples: 30
+
+# CUDA_VISIBLE_DEVICES=''
+Benchmark: 2.873 Ticks per second. Samples: 30
+
+# CUDA_VISIBLE_DEVICES=1
+Benchmark: 2.878 Ticks per second. Samples: 30
+Benchmark: 1004.287 Ticks per second. Samples: 1000
+Benchmark: 27.234 Ticks per second. Samples: 10000
+Benchmark: 21.622 Ticks per second. Samples: 30
+Benchmark: 21.416 Ticks per second. Samples: 500
+Benchmark: 21.981 Ticks per second. Samples: 700
+
+# ThreadPoolExecutor(max_workers=10)
+Benchmark: 24.362 Ticks per second. Samples:
+
+# ThreadPool(processes=10)
+Benchmark: 32.389 Ticks per second. Samples: 700
+
+# ThreadPool(processes=None)
+Benchmark: 33.33 Ticks per second. Samples: 700
+
+
+# CUDA_VISIBLE_DEVICES=''
+Benchmark: 3.577 Ticks per second. Samples: 700
+
+# 1k Critters, ThreadPool(processes=None)
+Benchmark: 3.528 Ticks per second. Samples: 700
+Benchmark: 3.425 Ticks per second. Samples: 700

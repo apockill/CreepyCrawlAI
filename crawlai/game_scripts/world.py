@@ -31,7 +31,6 @@ class World(Node2D):
 		print("Created", self.min_num_critters, "Critters")
 		print("Created", self.min_num_food, "Foods")
 		self.executor = ThreadPoolExecutor(
-			max_workers=12,
 			thread_name_prefix="WorldThread")
 
 	def _process(self, delta=None):

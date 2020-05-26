@@ -1,5 +1,3 @@
-import random
-
 import numpy as np
 import tensorflow as tf
 from tf_agents.agents.dqn.dqn_agent import DqnAgent

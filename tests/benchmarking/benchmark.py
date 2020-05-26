@@ -33,12 +33,14 @@ def main():
 
 	# Sometimes the first tick takes a while (tensorflow allocating memory, etc)
 	print("Warming up...")
-	world._process(0)
+	world._process()
+	world._process()
+	world._process()
 
 	print("Beginning Benchmark...")
 	start = time()
 	for _ in IncrementalBar().iter(list(range(N_TICKS))):
-		world._process(0)
+		world._process()
 	tps = round(N_TICKS / (time() - start), 3)
 
 	with Path("tests/benchmarking/benchmark.txt").open("a") as f:

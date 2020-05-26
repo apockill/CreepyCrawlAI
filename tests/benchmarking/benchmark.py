@@ -17,18 +17,18 @@ def main():
 	N_TICKS = 30
 
 	"""Set up benchmark parameters"""
-	World.min_num_critters = 1000
-	World.min_num_food = 500
-	World.grid_width = 250
-	World.grid_height = 250
-	World.rendering = False
+	world = World()
+	world.min_num_critters = 1000
+	world.min_num_food = 500
+	world.grid_width = 250
+	world.grid_height = 250
+	world.rendering = False
 	Critter.INPUT_RADIUS = 30
 
 	# Disable critters dying, to have more consistent benchmarks
 	Critter.HEALTH_TICK_PENALTY = 0
 
 	print("Initializing Creatures...")
-	world = World()
 	world._ready()
 
 	# Sometimes the first tick takes a while (tensorflow allocating memory, etc)

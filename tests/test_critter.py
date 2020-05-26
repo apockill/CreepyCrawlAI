@@ -9,12 +9,11 @@ from crawlai.position import Position
 from tests.helpers import validate_grid
 
 
-def test_dies_of_hunger():
+def test_dies_of_hunger(world: World):
 	"""Test the critter dies if left alone for the appropriate number of
 	steps (without a food source). """
 
 	# Instantiate the world
-	world = World()
 	world.min_num_food = 0
 	world.min_num_critters = 1
 	world._ready()
@@ -26,23 +25,22 @@ def test_dies_of_hunger():
 	with patch.object(world.grid, 'delete_item',
 					  wraps=world.grid.delete_item) as delete_item:
 		for i in range(n_steps_till_death - 1):
-			world._process(None)
+			world._process()
 			assert not delete_item.called
 			validate_grid(world.grid)
 
-		world._process(None)
+		world._process()
 		assert delete_item.called
 		validate_grid(world.grid)
 
 
-def test_consumes_food_then_dies():
+def test_consumes_food_then_dies(world: World):
 	"""Test that a critter consumes food then dies at the appropriate time"""
 
 	class FoodEater(BaseCritter):
 		def get_turn(self, grid) -> Turn:
 			return Turn(Position(1, 0), is_action=True)
 
-	world = World()
 	world.min_num_critters = 0
 	world.min_num_food = 0
 	world._ready()

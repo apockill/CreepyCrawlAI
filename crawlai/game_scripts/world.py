@@ -34,7 +34,7 @@ class World(Node2D):
 			max_workers=12,
 			thread_name_prefix="WorldThread")
 
-	def _process(self, delta):
+	def _process(self, delta=None):
 		self.step(self.grid, self.executor)
 
 		# Render all sprites
@@ -91,3 +91,6 @@ class World(Node2D):
 		for grid_item in all_items:
 			if grid_item.delete_queued:
 				grid.delete_item(grid_item)
+
+	def close(self):
+		self.executor.shutdown()

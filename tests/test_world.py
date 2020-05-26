@@ -20,13 +20,13 @@ def undying_base_critter_type():
 	BaseCritter.HEALTH_TICK_PENALTY = original_tick_penalty
 
 
-def test_random_movement_persists_safely(undying_base_critter_type):
+def test_random_movement_persists_safely(undying_base_critter_type,
+										 world: World):
 	"""Basically, make sure things don't crash during normal use"""
-	world = World()
-	world.min_num_critters = 900
-	world.min_num_food = 500
-	world.grid_height = 50
-	world.grid_width = 40
+	world.min_num_critters = 50
+	world.min_num_food = 100
+	world.grid_height = 25
+	world.grid_width = 15
 	n_ticks = 100
 
 	world._ready()
@@ -41,8 +41,7 @@ def test_random_movement_persists_safely(undying_base_critter_type):
 		validate_grid(world.grid)
 
 
-def test_add_item():
-	world = World()
+def test_add_item(world: World):
 	world._ready()
 
 	# Make sure world._ready() didn't instantiate anything
@@ -97,7 +96,7 @@ test_critter_movement_parameters = [
 	argnames=('pos', 'move', 'expected_pos', 'is_action', 'move_pos_occupied'),
 	argvalues=test_critter_movement_parameters)
 def test_critter_movement_and_actions(pos, move, expected_pos, is_action,
-									  move_pos_occupied):
+									  move_pos_occupied, world: World):
 	"""Test different move cases and actions.
 	If is_action is True, we verify that any critters that were in pos+move
 	have their relevant functions called. If is_action performs onto an empty
@@ -120,9 +119,8 @@ def test_critter_movement_and_actions(pos, move, expected_pos, is_action,
 			return Turn(Position(*move), is_action)
 
 	# Instantiate the world
-	World.grid_width = 3
-	World.grid_height = 3
-	world = World()
+	world.grid_width = 3
+	world.grid_height = 3
 	world._ready()
 	assert len(list(world.grid)) == 0
 	validate_grid(world.grid)
@@ -148,7 +146,7 @@ def test_critter_movement_and_actions(pos, move, expected_pos, is_action,
 				assert not move_item.called
 				assert not apply_action.called
 				assert not perform_action.called
-				world.step(world.grid)
+				world.step(world.grid, world.executor)
 
 				# Apply action should always be called when a creature says
 				# it wants to make an action

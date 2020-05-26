@@ -53,6 +53,7 @@ def test_apply_action_in_different_scenarios():
 		# Test applying action out of bounds fails
 		assert not grid.apply_action(Position(-1, 0), item)
 		assert not grid.apply_action(Position(-1, -1), item)
+		assert not grid.apply_action(Position(0, -1), item)
 		assert not perform_action_onto.called
 
 		# Test applying action on self raises error
@@ -68,3 +69,44 @@ def test_apply_action_in_different_scenarios():
 		grid.add_item(Position(1, 0), Food())
 		grid.apply_action(Position(1, 0), item)
 		assert perform_action_onto.called
+
+
+test_move_item_parameters = [
+	# Valid locations
+	*[((x, y), True)
+	  for x in range(3)
+	  for y in range(3)
+	  if (x, y) != (0, 0)],
+
+	# Bad coordinates past the top left of the grid
+	((0, 0), False),
+	((-1, 0), False),
+	((0, -1), False),
+	((-1, -1), False),
+
+	# Bad coordinates past the bottom right of the grid
+	*[((x, y), False)
+	  for x in range(4, 7)
+	  for y in range(4, 7)]
+]
+
+
+@pytest.mark.parametrize(
+	argnames=('pos', 'expected_success'),
+	argvalues=test_move_item_parameters)
+def test_move_item(pos, expected_success):
+	grid = Grid(width=3, height=3)
+	item = Critter()
+	start_pos = Position(0, 0)
+	end_pos = Position(*pos)
+	grid.add_item(start_pos, grid_item=item)
+
+	validate_grid(grid)
+	assert grid.try_move_item(end_pos, item) is expected_success, \
+		f"Failed to move from {grid.id_to_pos[item.id]} to {pos}"
+	validate_grid(grid)
+
+	expected_pos = end_pos if expected_success else start_pos
+	assert grid.id_to_pos[item.id] == expected_pos
+	assert grid.id_to_obj[item.id] is item
+	assert grid.array[expected_pos.x][expected_pos.y] == item.id

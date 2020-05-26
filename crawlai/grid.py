@@ -94,7 +94,7 @@ class Grid:
 		"""Checks if this is a valid coordinate to move a critter into"""
 		# Verify there is no object in that position
 		try:
-			if self.array[pos.x][pos.y] != 0:
+			if self.array[pos.x][pos.y] != 0 or pos.x < 0 or pos.y < 0:
 				return False
 			return True
 		except IndexError:

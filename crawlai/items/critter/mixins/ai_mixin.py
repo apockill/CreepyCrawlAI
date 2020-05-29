@@ -30,8 +30,8 @@ class AICritterMixin(BaseCritter):
 
 	# Params for train
 	TRAIN_BATCH_SIZE = 64
-	N_STEP_UPDATE = 5  # TODO: Find the difference between this and COLLECT_STEPS_PER_ITERATION?
 	LEARNING_RATE = 1e-3
+	# TODO: Look into N_STEP_UPDATE
 
 	# Step type constants
 	class _BatchedStepType:

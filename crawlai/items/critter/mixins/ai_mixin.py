@@ -21,6 +21,14 @@ class AICritterMixin(BaseCritter):
 			   for is_action in (True, False)] + [Turn(Position(0, 0), False)]
 	INPUT_RADIUS = 30
 
+	# Params for data collection
+	REPLAY_BUFFER_CAPACITY = 100000
+
+	# Params for train
+	TRAIN_BATCH_SIZE = 64
+	N_STEP_UPDATE = 5  # TODO: Find the difference between this and COLLECT_STEPS_PER_ITERATION?
+	LEARNING_RATE = 1e-3
+
 	# Step type constants
 	class _BatchedStepType:
 		"""Optimize away the expanding of dimensions when creating a 'batched'

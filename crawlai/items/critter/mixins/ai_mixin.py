@@ -25,9 +25,9 @@ class AICritterMixin(BaseCritter):
 	class _BatchedStepType:
 		"""Optimize away the expanding of dimensions when creating a 'batched'
 		timestep of batch size 1."""
-		FIRST = np.expand_dims(StepType.FIRST, axis=0)
-		MID = np.expand_dims(StepType.MID, axis=0)
-		LAST = np.expand_dims(StepType.LAST, axis=0)
+		FIRST = tf.expand_dims(StepType.FIRST, axis=0)
+		MID = tf.expand_dims(StepType.MID, axis=0)
+		LAST = tf.expand_dims(StepType.LAST, axis=0)
 
 	def __init__(self, environment: CritterEnvironment = None):
 		super().__init__()

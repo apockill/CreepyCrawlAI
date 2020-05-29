@@ -14,10 +14,10 @@ class CritterEnvironment(PyEnvironment):
 			name="observation")
 
 		# TODO: Figure out how to get len(AiCritterMixin.CHOICES)
-		self._action_spec = [array_spec.BoundedArraySpec(
+		self._action_spec = array_spec.BoundedArraySpec(
 			shape=(), dtype=np.int32,
 			minimum=0, maximum=n_choices - 1,
-			name="action")]
+			name="action")
 
 	@property
 	def batched(self):

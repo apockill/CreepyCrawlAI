@@ -33,23 +33,6 @@ class CritterEnvironment(PyEnvironment):
 		"""
 		return 1
 
-	def _step(self, action):
-		"""Updates the environment according to action and returns a `TimeStep`.
-
-		See `step(self, action)` docstring for more details.
-
-		Args:
-		  action: A NumPy array, or a nested dict, list or tuple of arrays
-			corresponding to `action_spec()`.
-		"""
-
-	def _reset(self):
-		"""Starts a new sequence, returns the first `TimeStep` of this sequence.
-
-		See `reset(self)` docstring for more details
-		"""
-		raise NotImplementedError()
-
 	def observation_spec(self):
 		"""Defines the observations provided by the environment.
 
@@ -72,3 +55,18 @@ class CritterEnvironment(PyEnvironment):
 		  An `ArraySpec`, or a nested dict, list or tuple of `ArraySpec`s.
 		"""
 		return self._action_spec
+
+	def _step(self, action):
+		raise NotImplementedError
+
+	def _reset(self):
+		raise NotImplementedError
+
+	def get_info(self):
+		raise NotImplementedError
+
+	def get_state(self):
+		raise NotImplementedError
+
+	def set_state(self, state):
+		raise NotImplementedError

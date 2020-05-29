@@ -40,19 +40,17 @@ class AICritterMixin(BaseCritter):
 				input_dtype=extract_inputs.INPUT_DTYPE,
 				n_choices=len(self.CHOICES))
 			environment = TFPyEnvironment(environment, isolation=False)
-		self.environment: TFPyEnvironment = environment
-
-		learning_rate = 1e-3
+		self.env: TFPyEnvironment = environment
 
 		q_net = QNetwork(
-			self.environment.observation_spec(),
-			self.environment.action_spec())
+			self.env.observation_spec(),
+			self.env.action_spec())
 		self.agent = DqnAgent(
-			time_step_spec=self.environment.time_step_spec(),
-			action_spec=self.environment.action_spec(),
+			time_step_spec=self.env.time_step_spec(),
+			action_spec=self.env.action_spec(),
 			q_network=q_net,
 			optimizer=tf.compat.v1.train.AdamOptimizer(
-				learning_rate=learning_rate))
+				learning_rate=self.LEARNING_RATE))
 		self.agent.initialize()
 
 		def get_action(step_type, reward, observation):

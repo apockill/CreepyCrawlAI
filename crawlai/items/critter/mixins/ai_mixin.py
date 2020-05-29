@@ -6,6 +6,10 @@ from tf_agents.agents.dqn.dqn_agent import DqnAgent
 from tf_agents.networks.q_network import QNetwork
 from tf_agents.environments.tf_py_environment import TFPyEnvironment
 from tf_agents.trajectories.time_step import StepType, TimeStep
+from tf_agents.replay_buffers.tf_uniform_replay_buffer import \
+	TFUniformReplayBuffer
+from tf_agents.trajectories import trajectory
+import tf_agents.utils.common as tf_agents_common
 
 from crawlai.items.critter.base_critter import BaseCritter
 from crawlai.position import Position
@@ -60,28 +64,6 @@ class AICritterMixin(BaseCritter):
 			optimizer=tf.compat.v1.train.AdamOptimizer(
 				learning_rate=self.LEARNING_RATE))
 		self.agent.initialize()
-
-		def get_action(step_type, reward, observation):
-			expanded_obs = tf.expand_dims(observation, axis=0)
-			expanded_reward = tf.convert_to_tensor([reward])
-			timestep = TimeStep(
-				step_type=step_type,
-				reward=expanded_reward,
-				observation=expanded_obs,
-				discount=np.array([1.0]))
-			return self.agent.policy.action(timestep)[0][0]
-
-		# Wrap get_action as a tensorflow function, which greatly increases
-		# execution speed
-		self._get_action = tf.function(
-			func=get_action,
-			input_signature=[
-				tf.TensorSpec(shape=(1,), dtype=tf.int32, name="step_type"),
-				tf.TensorSpec(shape=(), dtype=tf.float32, name="reward"),
-				self.environment.observation_spec()],
-			autograph=True,
-			# experimental_compile=True seems to slow down on GPU
-			experimental_compile=False)
 
 	def get_turn(self, grid: Grid) -> Turn:
 		if self._move_loop_generator is None:

@@ -38,3 +38,83 @@ Benchmark: 3.425 Ticks per second. Samples: 700
 
 # Switched get_turn to be backed by a generator
 Benchmark: 3.499 Ticks per second. Samples: 700
+
+# 10 critters
+Benchmark: 9.206 Ticks per second. Samples: 100
+Benchmark: 10.284 Ticks per second. Samples: 100
+Benchmark: 9.759 Ticks per second. Samples: 100
+
+# 100 critters
+Benchmark: 1.625 Ticks per second. Samples: 100
+
+# 1000 critters
+Benchmark: 0.155 Ticks per second. Samples: 100
+
+# Shared replay buffer AND replay iterator
+Benchmark: 0.16 Ticks per second. Samples: 100
+
+    # Add parallel calls to the replay iterator
+    # Have separate replay iterator for each thread
+
+# Train turned off
+Benchmark: 0.133 TPS.  N_TICKS:   5 world.min_num_critters: 1000, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False
+Benchmark: 16.413 TPS. N_TICKS: 500 world.min_num_critters:   15, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False
+Benchmark: 15.874 TPS. N_TICKS: 1000 world.min_num_critters: 15, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False
+
+# tf.function(self.agent.collect_policy.action)
+Benchmark: 54.907 TPS. N_TICKS: 1000 world.min_num_critters: 15, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False
+
+# tf_agents_common.function(self.agent.collect_policy.action)
+Benchmark: 54.558 TPS. N_TICKS: 1000 world.min_num_critters: 15, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False
+Benchmark: 54.295 TPS. N_TICKS: 1000 world.min_num_critters: 15, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False
+
+# ADDED TRAINING tf_agents_common(train_step)
+Benchmark: 42.585 TPS. N_TICKS: 1000 world.min_num_critters: 15, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False
+Benchmark: 54.295 TPS. N_TICKS: 1000 world.min_num_critters: 15, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False
+
+# Train every step, w/ tf_agents_common.function(train_step)
+Benchmark: 30.49 TPS. N_TICKS: 1000 world.min_num_critters: 15, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False
+
+# Train every step, w/ tf_agents_common.function(train_step, autograph=True)
+Benchmark: 31.017 TPS. N_TICKS: 1000 world.min_num_critters: 15, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False
+
+# Without wrapping train_step with tf_agents_common.function
+Benchmark: 27.785 TPS. N_TICKS: 1000 world.min_num_critters: 15, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False
+
+# Train step has @tf.function(autograph=True, experimental_relax_shapes=True)
+Benchmark: 30.743 TPS. N_TICKS: 1000 world.min_num_critters: 15, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False
+Benchmark: 30.461 TPS. N_TICKS: 1000 world.min_num_critters: 15, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False
+
+# Expected TPS: 4.57
+Benchmark: 6.277 TPS. N_TICKS: 100 world.min_num_critters: 100, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False
+Benchmark: 6.449 TPS. N_TICKS: 100 world.min_num_critters: 100, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False
+
+# tf.function(get_timestep)
+Benchmark: 5.668 TPS. N_TICKS: 100 world.min_num_critters: 100, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False
+
+# get_timestep (no tf.function)
+Benchmark: 6.149 TPS. N_TICKS: 100 world.min_num_critters: 100, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False
+
+# tf.function(get_timestep), Removed assertion that had tensor.numpy()'s in it
+Benchmark: 5.68 TPS. N_TICKS: 100 world.min_num_critters: 100, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False
+
+# Moved more of the function into get_timestep
+Benchmark: 0.325 TPS. N_TICKS: 100 world.min_num_critters: 100, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False
+
+# Revert
+Benchmark: 1.303 TPS. N_TICKS: 100 world.min_num_critters: 500, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False
+
+# Without TF_FORCE_GPU_ALLOW_GROWTH
+Benchmark: 1.291 TPS. N_TICKS: 100 world.min_num_critters: 500, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False
+
+# Without tf.config.set_soft_device_placement(True)
+Benchmark: 1.296 TPS. N_TICKS:   20 world.min_num_critters: 500, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False
+Benchmark: 1.265 TPS. N_TICKS: 1000 world.min_num_critters: 500, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False
+Benchmark: 6.385 TPS. N_TICKS:   20 world.min_num_critters: 100, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False
+Benchmark: 6.056 TPS. N_TICKS:   20 world.min_num_critters: 100, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False
+Benchmark: 1.086 TPS. N_TICKS:   20 world.min_num_critters: 500, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False
+Benchmark: 1.273 TPS. N_TICKS: 20 world.min_num_critters: 500, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False, Critter.INPUT_RADIUS 15, Critter.TRAIN_BATCH_SIZE 16
+
+
+# Wrapped self.replay_buffer.add_batch
+Benchmark: 1.252 TPS. N_TICKS: 20 world.min_num_critters: 500, world.min_num_food 500, world.grid_width 250, world.grid_height 250, world.rendering False, Critter.INPUT_RADIUS 15, Critter.TRAIN_BATCH_SIZE 16, Critter.REPLAY_BUFFER_CAPACITY 1000

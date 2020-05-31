@@ -65,6 +65,15 @@ class AICritterMixin(BaseCritter):
 				learning_rate=self.LEARNING_RATE))
 		self.agent.initialize()
 
+		self.replay_buffer = TFUniformReplayBuffer(
+			data_spec=self.agent.collect_data_spec,
+			batch_size=self.env.batch_size,
+			max_length=self.REPLAY_BUFFER_CAPACITY)
+
+	@property
+	def delete_queued(self):
+		return False
+
 	def get_turn(self, grid: Grid) -> Turn:
 		if self._move_loop_generator is None:
 			self._move_loop_generator = self._move_loop(grid)
@@ -72,26 +81,26 @@ class AICritterMixin(BaseCritter):
 
 	def _move_loop(self, grid: Grid) -> Iterator[Turn]:
 		"""Super smart AI goes here"""
-		replay_buffer = TFUniformReplayBuffer(
-			data_spec=self.agent.collect_data_spec,
-			batch_size=self.env.batch_size,
-			max_length=self.REPLAY_BUFFER_CAPACITY)
-		replay_dataset = replay_buffer.as_dataset(
+
+		replay_dataset = self.replay_buffer.as_dataset(
 			num_parallel_calls=None,  # TODO: Play with this number
 			sample_batch_size=self.TRAIN_BATCH_SIZE,
 			num_steps=2)
 		replay_iterator = iter(replay_dataset)
 
-		self.agent.train = tf_agents_common.function(self.agent.train)
-
-		policy_state = self.agent.collect_policy.get_initial_state(
-			self.env.batch_size)
+		# Wrap common functions with tf.function
+		self.agent.train = tf_agents_common.function(
+			self.agent.train, autograph=True)
+		self.agent.collect_policy.action = tf_agents_common.function(
+			self.agent.collect_policy.action, autograph=True)
 
 		@tf_agents_common.function
 		def train_step():
 			experience, _ = next(replay_iterator)
 			return self.agent.train(experience)
 
+		policy_state = self.agent.collect_policy.get_initial_state(
+			self.env.batch_size)
 		time_step_new: TimeStep = None
 		action_step = None
 		time_step_old: TimeStep = None
@@ -101,25 +110,26 @@ class AICritterMixin(BaseCritter):
 				grid=grid,
 				pos=grid.id_to_pos[self.id],
 				radius=self.INPUT_RADIUS)
+
 			time_step_new = TimeStep(
 				step_type=(self._BatchedStepType.FIRST if time_step_new is None
 						   else self._BatchedStepType.MID),
 				reward=tf.convert_to_tensor([self.age], dtype=tf.float32),
 				observation=tf.expand_dims(observation, axis=0),
-				discount=tf.convert_to_tensor([1.0]))  # TODO: Look at tfagents example to figure out discount
+				# TODO: Look at tfagents example to figure out discount
+				discount=tf.convert_to_tensor([1.0]))
 
 			# Calculate the trajectory from the last loop
 			if time_step_old is not None:
-				assert time_step_old.reward.numpy() < time_step_new.reward.numpy()
-				replay_buffer.add_batch(
+				self.replay_buffer.add_batch(
 					trajectory.from_transition(
 						time_step=time_step_old,
 						action_step=action_step,
 						next_time_step=time_step_new))
 
-				# Run a single train step TODO: Decide if this should be configurable
-				if replay_buffer.num_frames() % self.TRAIN_BATCH_SIZE == 0:
-					train_loss = train_step()
+			# Run a single train step TODO: Decide if this should be configurable
+			if self.age > 2:
+				train_loss = train_step()
 
 			action_step = self.agent.collect_policy.action(
 				time_step_new, policy_state)

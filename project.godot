@@ -19,6 +19,10 @@ config/name="creepycrawlai"
 run/main_scene="res://Game/World/World.tscn"
 config/icon="res://icon.png"
 
+[display]
+
+window/vsync/use_vsync=false
+
 [gdnative]
 
 singletons=[ "res://pythonscript.gdnlib" ]

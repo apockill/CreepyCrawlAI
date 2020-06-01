@@ -47,8 +47,8 @@ def test_consumes_food_then_dies(world: World):
 
 	assert len(list(world.grid)) == 0
 
-	critter: FoodEater = world.add_item(Position(1, 1), item_type=FoodEater)
-	food: Food = world.add_item(Position(2, 1), item_type=Food)
+	critter: FoodEater = world.add_item(Position(1, 1), item=FoodEater())
+	food: Food = world.add_item(Position(2, 1), item=Food())
 
 	n_steps_till_food_depleted = int(Food.MAX_NUTRITION
 									 / Critter.HEALTH_TICK_PENALTY)

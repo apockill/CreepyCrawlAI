@@ -1,5 +1,6 @@
 from typing import Type, Optional
 from multiprocessing.pool import ThreadPool
+from collections import Counter
 
 from godot import exposed, export
 from godot.bindings import Node2D, Vector2
@@ -24,16 +25,12 @@ class World(Node2D):
 		self.grid = Grid(
 			width=self.grid_width,
 			height=self.grid_height)
-		for i in range(0, self.min_num_critters):
-			self.add_item(self.grid.random_free_cell, Critter)
-		for i in range(0, self.min_num_food):
-			self.add_item(self.grid.random_free_cell, Food)
-		print("Created", self.min_num_critters, "Critters")
-		print("Created", self.min_num_food, "Foods")
+		self._spawn_items()
 		self.pool = ThreadPool()
 
 	def _process(self, delta=None):
 		self.step(self.grid, self.pool)
+		self._spawn_items()
 
 		# Render all sprites
 		if self.rendering:
@@ -47,9 +44,17 @@ class World(Node2D):
 		Connected to: GUI.RenderButton """
 		self.rendering = button_pressed
 
+	def _spawn_items(self):
+		"""Spawns items until they meet the minimum requirements"""
+		item_counts = Counter(type(item) for item in self.grid)
+
+		for i in range(self.min_num_critters - item_counts[Critter]):
+			self.add_item(self.grid.random_free_cell, Critter())
+		for i in range(self.min_num_food - item_counts[Food]):
+			self.add_item(self.grid.random_free_cell, Food())
+
 	def add_item(self, pos: Position,
-				 item_type: Type[GridItem]) -> Optional[GridItem]:
-		item = item_type()
+				 item: GridItem) -> Optional[GridItem]:
 		successful = self.grid.add_item(pos=pos, grid_item=item)
 		if successful:
 			self.add_child(item.instance)
@@ -60,7 +65,7 @@ class World(Node2D):
 
 	@staticmethod
 	def step(grid: Grid, pool: ThreadPool):
-		"""Perform the logic for one full grid step"""
+		"""Perform the logic for all items, using threading for get_move"""
 		all_items = list(grid)
 
 		# Run tick for all grid items

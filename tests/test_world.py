@@ -37,7 +37,8 @@ def test_random_movement_persists_safely(undying_base_critter_type,
 	for i in range(0, n_ticks):
 		state_before = world.grid.array.copy()
 		world._process(i)
-		assert (state_before != world.grid.array).any()
+		assert (state_before != world.grid.array).any(), \
+			f"There was no change in the grid!\n{world.grid.array}"
 		validate_grid(world.grid)
 
 
@@ -59,13 +60,13 @@ def test_add_item(world: World):
 		assert not Node.queue_free.called
 
 		# Put an item in a location
-		item = world.add_item(pos=Position(0, 0), item_type=FakeItem)
+		item = world.add_item(pos=Position(0, 0), item=FakeItem())
 		validate_grid(world.grid)
 		assert isinstance(item, FakeItem)
 		assert not Node.queue_free.called
 
 		# Try to put another item in the same location
-		item = world.add_item(pos=Position(0, 0), item_type=FakeItem)
+		item = world.add_item(pos=Position(0, 0), item=FakeItem())
 		assert Node.queue_free.called
 		assert item is None
 		validate_grid(world.grid)
@@ -126,13 +127,13 @@ def test_critter_movement_and_actions(pos, move, expected_pos, is_action,
 	validate_grid(world.grid)
 
 	# Add the item at the initial position
-	item = world.add_item(Position(*pos), item_type=PresetCritter)
+	item = world.add_item(Position(*pos), item=PresetCritter())
 	assert len(list(world.grid)) == 1
 	validate_grid(world.grid)
 
 	# If the move position is supposed to be obsructed, add an item there
 	if move_pos_occupied:
-		world.add_item(Position(*pos) + Position(*move), item_type=Food)
+		world.add_item(Position(*pos) + Position(*move), item=Food())
 		validate_grid(world.grid)
 	grid_array_before = world.grid.array.copy()
 
@@ -175,3 +176,28 @@ def test_critter_movement_and_actions(pos, move, expected_pos, is_action,
 
 	final_pos = world.grid.id_to_pos[item.id]
 	assert final_pos == Position(*expected_pos)
+
+
+def test_world_respawns_food(world):
+	world.min_num_food = 100
+	world._ready()
+
+	def get_foods():
+		return [item for item in world.grid if isinstance(item, Food)]
+
+	# Verify the world spawned food as expected before the first tick
+	assert len(get_foods()) == world.min_num_food
+
+	# Smoke test
+	world._process()
+	assert len(get_foods()) == world.min_num_food
+
+	# Delete some food and verify the world respawns it
+	for i in range(10):
+		food_item = get_foods()[0]
+		world.grid.delete_item(food_item)
+	assert len(get_foods()) == world.min_num_food - 10
+
+	# Run world._process() and verify food was regenerated
+	world._process()
+	assert len(get_foods()) == world.min_num_food

@@ -15,10 +15,15 @@ class BaseCritter(GridItem):
 
 	def __init__(self):
 		super().__init__()
+		self.health: int
+		self.age: int
+		self._reset_stats()
+
+	def _reset_stats(self):
 		self.health = self.MAX_HEALTH
 		self.age = 0
 
-	def tick(self):
+	def _tick_stats(self):
 		self.age += 1
 		self.health -= self.HEALTH_TICK_PENALTY
 

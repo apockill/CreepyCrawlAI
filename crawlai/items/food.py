@@ -13,9 +13,6 @@ class Food(GridItem):
 		super().__init__()
 		self.nutrition = self.MAX_NUTRITION
 
-	def tick(self):
-		pass
-
 	def take_nutrition(self, amount):
 		"""Returns up to the amount requested, if available"""
 		to_take = clamp(amount, 0, self.nutrition)

@@ -68,10 +68,6 @@ class World(Node2D):
 		"""Perform the logic for all items, using threading for get_move"""
 		all_items = list(grid)
 
-		# Run tick for all grid items
-		for grid_item in all_items:
-			grid_item.tick()
-
 		# Get turns here, in the future this will be threaded
 		turns = pool.map(lambda gi: gi.get_turn(grid), all_items)
 

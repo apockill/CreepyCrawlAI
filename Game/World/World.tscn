@@ -7,18 +7,18 @@
 
 [node name="BaseLevel" type="Node2D"]
 script = ExtResource( 5 )
-min_num_critters = 5
-min_num_food = 500
-grid_width = 50
-grid_height = 50
+min_num_critters = 1
+min_num_food = 50
+grid_width = 25
+grid_height = 25
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2( 511, 299 )
 current = true
 script = ExtResource( 1 )
-zoom_step = 1.0
+zoom_step = 2.0
 zoom_max = 15.0
-zoom_speed = 6.0
+zoom_speed = 5.0
 
 [node name="Sprite" type="Sprite" parent="."]
 position = Vector2( 1617, 891 )

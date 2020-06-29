@@ -5,10 +5,11 @@ from tf_agents.specs import array_spec
 
 class CritterEnvironment(PyEnvironment):
 
-	def __init__(self, input_radius, input_dtype, n_choices):
+	def __init__(self, input_radius, input_dtype, n_choices, n_layers):
 		super().__init__()
 		input_shape = (input_radius * 2 + 1,
-					   input_radius * 2 + 1)
+					   input_radius * 2 + 1,
+					   n_layers)
 		self._observation_spec = array_spec.ArraySpec(
 			shape=input_shape, dtype=input_dtype,
 			name="observation")

@@ -72,10 +72,6 @@ class AICritterMixin(BaseCritter):
 			batch_size=self.env.batch_size,
 			max_length=self.REPLAY_BUFFER_CAPACITY)
 
-	@property
-	def delete_queued(self):
-		return False
-
 	def get_turn(self, grid: Grid) -> Turn:
 		if self._move_loop_generator is None:
 			self._move_loop_generator = self._move_loop(grid)

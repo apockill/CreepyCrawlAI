@@ -7,26 +7,9 @@ import tensorflow as tf
 from progress.bar import IncrementalBar
 
 from tests import monkeypatch_godot_import
+from tests.helpers import Timer
 from crawlai.game_scripts.world import World
 from crawlai.items.critter.critter import Critter
-
-
-class Timer:
-	def __init__(self):
-		self.start, self.end = None, None
-
-	def __enter__(self):
-		self.start = time()
-		return self
-
-	def __exit__(self, exc_type, exc_val, exc_tb):
-		self.end = time()
-
-	@property
-	def elapsed(self):
-		if self.end is None:
-			return time() - self.start
-		return self.end - self.start
 
 
 def main():

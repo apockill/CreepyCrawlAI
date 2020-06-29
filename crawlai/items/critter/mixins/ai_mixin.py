@@ -23,7 +23,8 @@ class AICritterMixin(BaseCritter):
 	CHOICES = [Turn(Position(*c), is_action)
 			   for c in [(0, 1), (1, 0), (-1, 0), (0, -1)]
 			   for is_action in (True, False)] + [Turn(Position(0, 0), False)]
-	INPUT_RADIUS = 30
+	INPUT_RADIUS = 30  # TODO: Attempt making this much, much smaller
+	LAYERS = {"Critter": 1, "Food": 2}
 
 	# Params for data collection
 	REPLAY_BUFFER_CAPACITY = 100000
@@ -41,17 +42,18 @@ class AICritterMixin(BaseCritter):
 		MID = tf.expand_dims(StepType.MID, axis=0)
 		LAST = tf.expand_dims(StepType.LAST, axis=0)
 
-	def __init__(self, environment: CritterEnvironment = None):
+	def __init__(self):
+
 		super().__init__()
 		self._move_loop_generator = None
 		"""Created on first call of self.next_step"""
 
-		if environment is None:
-			environment = CritterEnvironment(
-				input_radius=self.INPUT_RADIUS,
-				input_dtype=extract_inputs.INPUT_DTYPE,
-				n_choices=len(self.CHOICES))
-			environment = TFPyEnvironment(environment, isolation=False)
+		environment = CritterEnvironment(
+			input_radius=self.INPUT_RADIUS,
+			input_dtype=extract_inputs.INPUT_DTYPE,
+			n_choices=len(self.CHOICES),
+			n_layers=len(self.LAYERS) + 1)
+		environment = TFPyEnvironment(environment, isolation=False)
 		self.env: TFPyEnvironment = environment
 
 		q_net = QNetwork(

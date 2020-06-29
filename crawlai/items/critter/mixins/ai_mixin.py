@@ -45,6 +45,10 @@ class AICritterMixin(BaseCritter):
 	def __init__(self):
 
 		super().__init__()
+		# Stats
+		self.train_loss = None
+
+		# Created on the first call of self.next_step
 		self._move_loop_generator = None
 		"""Created on first call of self.next_step"""
 
@@ -127,7 +131,7 @@ class AICritterMixin(BaseCritter):
 
 			# Run a single train step TODO: Decide if this should be configurable
 			if self.age > 2:
-				train_loss = train_step()
+				self.train_loss = train_step()
 
 			action_step = self.agent.collect_policy.action(
 				time_step_new, policy_state)

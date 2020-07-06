@@ -68,8 +68,9 @@ class World(Node2D):
 		"""Perform the logic for all items, using threading for get_move"""
 		all_items = list(grid)
 
-		# Get turns here, in the future this will be threaded
-		turns = pool.map(lambda gi: gi.get_turn(grid), all_items)
+		# Get turns here, using a locked grid
+		with grid as locked_grid:
+			turns = pool.map(lambda gi: gi.get_turn(locked_grid), all_items)
 
 		# Run the moves on the grid
 		for grid_item, turn in zip(all_items, turns):

@@ -20,9 +20,11 @@ from crawlai.model import extract_inputs
 
 
 class AICritterMixin(BaseCritter):
-	CHOICES = [Turn(Position(*c), is_action)
-			   for c in [(0, 1), (1, 0), (-1, 0), (0, -1)]
-			   for is_action in (True, False)] + [Turn(Position(0, 0), False)]
+	CHOICES = [
+				  Turn(Position(*c), is_action)
+				  for c in [(0, 1), (1, 0), (-1, 0), (0, -1)]
+				  for is_action in (True, False)
+			  ] + [Turn(Position(0, 0), False)]
 	INPUT_RADIUS = 30  # TODO: Attempt making this much, much smaller
 	LAYERS = {"Critter": 1, "Food": 2}
 

@@ -7,11 +7,29 @@ from crawlai.grid_item import GridItem
 from crawlai.position import Position
 
 
+def lockable(fn):
+	"""Raises a WritingToLockedGrid exception when this method is accessed
+	on a locked grid"""
+
+	def wrapper(self: 'Grid', *args, **kwargs):
+		if self.locked:
+			raise Grid.WritingToLockedGrid
+		return fn(self, *args, **kwargs)
+
+	return wrapper
+
+
 class Grid:
+	class WritingToLockedGrid(Exception):
+		"""Raised when a grid array is going to be changed, but the grid is
+		in a locked state"""
+
 	def __init__(self, width, height):
 		# Grid parameters
 		self.width: int = width
 		self.height: int = height
+		self.locked = False
+		self._hash_cache = None
 
 		# Grid state
 		self.array: np.ndarray = np.zeros(shape=(width, height), dtype=np.int_)
@@ -19,10 +37,30 @@ class Grid:
 		self.id_to_obj: Dict[int, GridItem] = {}
 		self.id_to_pos: Dict[int, Position] = {}
 
+	def __hash__(self):
+		"""Only hashable when the grid is locked"""
+		if self.locked:
+			return self._hash_cache
+		else:
+			raise TypeError("A grid cannot be hashed when unlocked")
+
 	def __iter__(self):
 		for grid_item in self.id_to_obj.values():
 			yield grid_item
 
+	def __enter__(self):
+		"""Lock the grid, and cache the grid.array hashes"""
+		self.array.flags.writeable = False
+		self.locked = True
+		self._hash_cache = hash(self.array.data.tobytes())
+		return self
+
+	def __exit__(self, exc_type, exc_val, exc_tb):
+		self.array.flags.writeable = True
+		self.locked = False
+		self._hash_cache = None
+
+	@lockable
 	def add_item(self, pos: Position, grid_item: GridItem) -> bool:
 		if not self.is_empty_coord(pos):
 			return False
@@ -36,6 +74,7 @@ class Grid:
 		assert self.try_move_item(pos, grid_item, is_new=True)
 		return True
 
+	@lockable
 	def delete_item(self, grid_item: GridItem):
 		"""Dereference everything about the item, and then queue_free the
 		instance"""
@@ -44,6 +83,7 @@ class Grid:
 		self.array[pos.x][pos.y] = 0
 		grid_item.instance.queue_free()
 
+	@lockable
 	def apply_action(self, direction: Position, grid_item: GridItem) -> bool:
 		"""Applies the grid_item's action onto the grid cell that is 'direction'
 		relative to grid_item's position
@@ -68,12 +108,14 @@ class Grid:
 			return True
 		return False
 
+	@lockable
 	def move_item_relative(self, direction: Position,
 						   grid_item: GridItem) -> bool:
 		return self.try_move_item(
 			pos=self.id_to_pos[grid_item.id] + direction,
 			grid_item=grid_item)
 
+	@lockable
 	def try_move_item(self, pos: Position,
 					  grid_item: GridItem,
 					  is_new=False) -> bool:

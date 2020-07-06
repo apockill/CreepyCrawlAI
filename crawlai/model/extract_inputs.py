@@ -13,6 +13,14 @@ from crawlai.grid_item import GridItem
 INPUT_DTYPE = np.int32
 """The smallest int type accepted by tensorflow"""
 
+# TODO: Implement caching
+_generate_layered_grid_lock = RLock()
+"""Because generating the full layered grid is a bit expensive, it's best for
+one thread to process this and the rest of them to use the cached result. """
+_instance_grid_cache: Dict[int, np.ndarray] = {}
+"""Holds a dictionary of a single value, of format 
+{hash(grid.array.data.tobytes(), ): instance_grid} """
+
 
 def _generate_layered_grid(grid: Grid,
 						   layers: Dict[str, int],
@@ -39,21 +47,10 @@ def _generate_layered_grid(grid: Grid,
 		full_grid[pos.x + radius, pos.y + radius, layer] = 1
 
 	# Fill in the "walls" around the radius
-	before = full_grid.copy()
 	full_grid[0:radius, :, 0] = 1
-	assert not (full_grid == before).all()
-
-	before = full_grid.copy()
 	full_grid[w + radius:, :, 0] = 1
-	assert not (full_grid == before).all()
-
-	before = full_grid.copy()
 	full_grid[:, 0:radius, 0] = 1
-	assert not (full_grid == before).all()
-
-	before = full_grid.copy()
 	full_grid[:, h + radius:, 0] = 1  # TODO: verify why this is different
-	assert not (full_grid == before).all()
 	return full_grid
 
 
@@ -72,7 +69,15 @@ def get_instance_grid(
 		   1: critters
 		   2: food
 	"""
-	layered_grid = _generate_layered_grid(grid, layers, radius)
+	global _instance_grid_cache
+	with _generate_layered_grid_lock:
+		key = (hash(grid), tuple(layers.items()), radius)
+		if key in _instance_grid_cache:
+			layered_grid = _instance_grid_cache[key]
+		else:
+			layered_grid = _generate_layered_grid(grid, layers, radius)
+			_instance_grid_cache.clear()
+			_instance_grid_cache[key] = layered_grid
 
 	x1, y1 = pos.x, pos.y
 	x2, y2 = pos.x + radius * 2 + 1, pos.y + radius * 2 + 1

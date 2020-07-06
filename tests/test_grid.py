@@ -110,3 +110,30 @@ def test_move_item(pos, expected_success):
 	assert grid.id_to_pos[item.id] == expected_pos
 	assert grid.id_to_obj[item.id] is item
 	assert grid.array[expected_pos.x][expected_pos.y] == item.id
+
+
+def test_grid_locking():
+	"""Test that a grid is locked while in a context manager"""
+	grid = Grid(width=5, height=100)
+	item = Critter()
+
+	grid.add_item(Position(1, 1), item)
+
+	# Test none of the following work
+	with pytest.raises(TypeError):
+		hash(grid)
+	with grid as locked_grid:
+		assert isinstance(hash(grid), int)
+		with pytest.raises(Grid.WritingToLockedGrid):
+			locked_grid.move_item_relative(Position(1, 1), item)
+		with pytest.raises(Grid.WritingToLockedGrid):
+			locked_grid.add_item(locked_grid.random_free_cell, Critter())
+		with pytest.raises(Grid.WritingToLockedGrid):
+			locked_grid.try_move_item(locked_grid.random_free_cell, item)
+	validate_grid(grid)
+
+	# Test all of the following do work
+	assert locked_grid.move_item_relative(Position(1, 1), item)
+	assert locked_grid.add_item(locked_grid.random_free_cell, Critter())
+	assert locked_grid.try_move_item(locked_grid.random_free_cell, item)
+	validate_grid(grid)

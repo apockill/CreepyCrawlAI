@@ -92,11 +92,12 @@ def test_get_grid_around(pos, radius, expected_occupied_layers):
 	layers = {"Critter": C, "Food": F}
 	grid = Grid(width=4, height=5)
 	grid.add_item(pos=Position(*pos), grid_item=Critter())
-	grid_around = extract_inputs.get_instance_grid(
-		grid=grid,
-		pos=Position(*pos),
-		radius=radius,
-		layers=layers)
+	with grid:
+		grid_around = extract_inputs.get_instance_grid(
+			grid=grid,
+			pos=Position(*pos),
+			radius=radius,
+			layers=layers)
 
 	w, h, n_layers = grid_around.shape
 	assert h == w
@@ -126,3 +127,64 @@ def test_get_grid_around(pos, radius, expected_occupied_layers):
 			assert grid_around[x, y, occupied_layer] == expect_is_occupied, \
 				f"Layer {occupied_layer} for position ({pos[0]},{pos[1]}) " \
 				f"was expected have value {expect_is_occupied}"
+
+
+def test_instance_grid_is_cached():
+	"""Verify that the instance grid is calculated once and reused for the
+	various different threads/critters"""
+	grid = Grid(width=3, height=3)
+	item = Critter()
+	grid.add_item(Position(0, 0), item)
+
+	assert len(list(extract_inputs._instance_grid_cache.keys())) == 0, \
+		"The caches should start out empty!"
+
+	def validate_cache_changes(changed, last_cache):
+		cache = extract_inputs._instance_grid_cache
+		assert len(cache) == 1
+		assert ((list(last_cache.keys())[0] == list(cache.keys())[0])
+				is not changed)
+
+	# Initialize the cache
+	extract_inputs.get_instance_grid(
+		grid,
+		pos=Position(1, 1),
+		radius=5,
+		layers=Critter.LAYERS)
+
+	# Verify the cache doesn't change if the grid hasn't changed
+	for i in range(10):
+		last_cache = extract_inputs._instance_grid_cache.copy()
+		extract_inputs.get_instance_grid(
+			grid,
+			pos=Position(1, 1),
+			radius=5,
+			layers=Critter.LAYERS)
+		validate_cache_changes(False, last_cache)
+
+	# Verify that the cache reloads when the radius changes
+	last_cache = extract_inputs._instance_grid_cache.copy()
+	extract_inputs.get_instance_grid(
+		grid,
+		pos=Position(1, 1),
+		radius=10,
+		layers=Critter.LAYERS)
+	validate_cache_changes(True, last_cache)
+
+	# Verify the cache reloads when the layers change
+	last_cache = extract_inputs._instance_grid_cache.copy()
+	extract_inputs.get_instance_grid(
+		grid,
+		pos=Position(1, 1),
+		radius=10,
+		layers={"Critter": 1})
+	validate_cache_changes(True, last_cache)
+
+	# Verify the cache does _not_ reload when position is changed
+	last_cache = extract_inputs._instance_grid_cache.copy()
+	extract_inputs.get_instance_grid(
+		grid,
+		pos=Position(1, 2),
+		radius=10,
+		layers={"Critter": 1})
+	validate_cache_changes(False, last_cache)

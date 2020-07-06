@@ -1,5 +1,5 @@
 import random
-import itertools
+import os
 from pathlib import Path
 from time import time
 
@@ -54,17 +54,20 @@ def main():
 	tps = round(N_TICKS / (time() - start), 3)
 
 	with Path("tests/benchmarking/benchmark.txt").open("a") as f:
-		report = \
-			f"\nBenchmark: {tps} TPS. " \
-			f"N_TICKS: {N_TICKS} " \
-			f"world.min_num_critters: {world.min_num_critters}, " \
-			f"world.min_num_food {world.min_num_food}, " \
-			f"world.grid_width {world.grid_width}, " \
-			f"world.grid_height {world.grid_height}, " \
-			f"world.rendering {world.rendering}, " \
-			f"Critter.INPUT_RADIUS {Critter.INPUT_RADIUS}, " \
-			f"Critter.TRAIN_BATCH_SIZE {Critter.TRAIN_BATCH_SIZE}, " \
-			f"Critter.REPLAY_BUFFER_CAPACITY {Critter.REPLAY_BUFFER_CAPACITY}"
+		CUDA_VISIBLE_DEVICES = os.environ.get('CUDA_VISIBLE_DEVICES', None)
+		report = (
+			f"\nBenchmark: {tps} TPS. "
+			f"N_TICKS: {N_TICKS} "
+			f"world.min_num_critters: {world.min_num_critters}, "
+			f"world.min_num_food {world.min_num_food}, "
+			f"world.grid_width {world.grid_width}, "
+			f"world.grid_height {world.grid_height}, "
+			f"world.rendering {world.rendering}, "
+			f"Critter.INPUT_RADIUS {Critter.INPUT_RADIUS}, "
+			f"Critter.TRAIN_BATCH_SIZE {Critter.TRAIN_BATCH_SIZE}, "
+			f"Critter.REPLAY_BUFFER_CAPACITY {Critter.REPLAY_BUFFER_CAPACITY}, "
+			f"CUDA_VISIBLE_DEVICES {CUDA_VISIBLE_DEVICES}"
+		)
 		f.write(report)
 	print(report)
 

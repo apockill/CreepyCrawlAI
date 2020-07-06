@@ -131,7 +131,7 @@ class AICritterMixin(BaseCritter):
 						action_step=action_step,
 						next_time_step=time_step_new))
 
-			# Run a single train step TODO: Decide if this should be configurable
+			# Run a single train step
 			if self.age > 2:
 				self.train_loss = train_step()
 

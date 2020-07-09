@@ -56,7 +56,6 @@ class AICritterMixin(BaseCritter):
 
 		# Created on the first call of self.next_step
 		self._move_loop_generator = None
-		"""Created on first call of self.next_step"""
 
 		environment = CritterEnvironment(
 			input_radius=self.INPUT_RADIUS,
@@ -161,4 +160,68 @@ class AICritterMixin(BaseCritter):
 			yield self.CHOICES[int(action_step[0][0])]
 
 			time_step_old = time_step_new
-			time_step_new = None
+
+	def _perform_episode(self, grid):
+		"""Run through an episode from start to finish, keeping stats
+		correct and yielding time steps along the way"""
+
+		time_step = self._next_time_step(
+			grid=grid,
+			step_type=self._BatchedStepType.FIRST)
+
+		yield time_step
+		self._last_step_health = self.health
+		self._tick_stats()
+
+		# Wait until the critter _would_ have died
+		while not self.delete_queued:
+			time_step = self._next_time_step(
+				grid=grid,
+				step_type=self._BatchedStepType.MID)
+
+			self._last_step_health = self.health
+			yield time_step
+			self._tick_stats()
+
+		time_step = self._next_time_step(
+			grid=grid,
+			step_type=self._BatchedStepType.LAST)
+		print(f"Died at {self.age}, "
+			  f"Loss: {self.train_loss.loss if self.train_loss else None}, "
+			  f"Health: {self.health}, "
+			  f"Last Health: {self._last_step_health}, "
+			  f"Replay buffer: {self.replay_buffer.num_frames()}, "
+			  f"Position: {grid.id_to_pos[self.id]}")
+		self._reset_stats()
+		assert not self.delete_queued  # TODO: Remove, consider adding a test
+		yield time_step
+
+	def _reset_stats(self):
+		super()._reset_stats()
+		self._last_step_health = self.health
+
+	def _next_time_step(self, grid: Grid,
+						step_type: 'AICritterMixin._BatchedStepType'):
+		# Always start by getting a time_step
+		observation = extract_inputs.get_instance_grid(
+			grid=grid,
+			pos=grid.id_to_pos[self.id],
+			radius=self.INPUT_RADIUS,
+			layers=self.LAYERS)
+
+		if step_type is self._BatchedStepType.FIRST:
+			reward = 0
+		elif step_type is self._BatchedStepType.LAST:
+			reward = 0
+		elif step_type is self._BatchedStepType.MID:
+			reward = self.health - self._last_step_health
+			reward = max(-1, min(1, reward))
+		else:
+			raise RuntimeError(f"Unknown step type: {step_type}")
+
+		return TimeStep(
+			step_type=step_type,
+			reward=tf.convert_to_tensor([reward], dtype=tf.float32),
+			observation=tf.expand_dims(observation, axis=0),
+			# TODO: Look at tfagents example to figure out discount
+			discount=tf.convert_to_tensor([1.0]))

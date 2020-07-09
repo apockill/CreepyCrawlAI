@@ -62,6 +62,8 @@ class AICritterMixin(BaseCritter):
 			input_dtype=extract_inputs.INPUT_DTYPE,
 			n_choices=len(self.CHOICES),
 			n_layers=len(self.LAYERS) + 1)
+
+		# TODO get rid of with tf-agents==0.5.0
 		environment = TFPyEnvironment(environment, isolation=False)
 		self.env: TFPyEnvironment = environment
 

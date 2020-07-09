@@ -1,7 +1,9 @@
+import random
 from typing import Iterator
 
-import numpy as np
 import tensorflow as tf
+import numpy as np
+from tf_agents.trajectories import policy_step
 from tf_agents.agents.dqn.dqn_agent import DqnAgent
 from tf_agents.networks.q_network import QNetwork
 from tf_agents.environments.tf_py_environment import TFPyEnvironment
@@ -25,7 +27,7 @@ class AICritterMixin(BaseCritter):
 				  for c in [(0, 1), (1, 0), (-1, 0), (0, -1)]
 				  for is_action in (True, False)
 			  ] + [Turn(Position(0, 0), False)]
-	INPUT_RADIUS = 30  # TODO: Attempt making this much, much smaller
+	INPUT_RADIUS = 15  # TODO: Attempt making this much, much smaller
 	LAYERS = {"Critter": 1, "Food": 2}
 
 	# Params for data collection
@@ -49,6 +51,8 @@ class AICritterMixin(BaseCritter):
 		super().__init__()
 		# Stats
 		self.train_loss = None
+		self.step = 0
+		self._last_step_health = self.health
 
 		# Created on the first call of self.next_step
 		self._move_loop_generator = None
@@ -68,6 +72,9 @@ class AICritterMixin(BaseCritter):
 		self.agent = DqnAgent(
 			time_step_spec=self.env.time_step_spec(),
 			action_spec=self.env.action_spec(),
+			gamma=0.6,
+			# target_update_period=5,  # TODO: bench perf
+			# target_update_tau=0.05,  # TODO: bench perf
 			q_network=q_net,
 			optimizer=tf.compat.v1.train.AdamOptimizer(
 				learning_rate=self.LEARNING_RATE))
@@ -98,45 +105,57 @@ class AICritterMixin(BaseCritter):
 		self.agent.collect_policy.action = tf_agents_common.function(
 			self.agent.collect_policy.action, autograph=True)
 
-		@tf_agents_common.function
+		@tf_agents_common.function(autograph=True)
+		def add_batch(time_step_old, action_step, time_step_new):
+			self.replay_buffer.add_batch(
+				trajectory.from_transition(
+					time_step=time_step_old,
+					action_step=action_step,
+					next_time_step=time_step_new)
+			)
+
+		@tf_agents_common.function(autograph=True)
 		def train_step():
 			experience, _ = next(replay_iterator)
 			return self.agent.train(experience)
 
 		policy_state = self.agent.collect_policy.get_initial_state(
 			self.env.batch_size)
-		time_step_new: TimeStep = None
+		time_step_iterator = self._perform_episode(grid)
+		time_step_new: TimeStep
 		action_step = None
 		time_step_old: TimeStep = None
 		while True:
-			# Always start by getting a timestep
-			observation = extract_inputs.get_instance_grid(
-				grid=grid,
-				pos=grid.id_to_pos[self.id],
-				radius=self.INPUT_RADIUS)
-
-			time_step_new = TimeStep(
-				step_type=(self._BatchedStepType.FIRST if time_step_new is None
-						   else self._BatchedStepType.MID),
-				reward=tf.convert_to_tensor([self.age], dtype=tf.float32),
-				observation=tf.expand_dims(observation, axis=0),
-				# TODO: Look at tfagents example to figure out discount
-				discount=tf.convert_to_tensor([1.0]))
+			try:
+				time_step_new = next(time_step_iterator)
+				self.step += 1
+			except StopIteration:
+				# It's important to reset time_step_old so we never get a
+				# trajectory that goes from END to FIRST
+				time_step_old = None
+				time_step_iterator = self._perform_episode(grid)
+				continue
 
 			# Calculate the trajectory from the last loop
 			if time_step_old is not None:
-				self.replay_buffer.add_batch(
-					trajectory.from_transition(
-						time_step=time_step_old,
-						action_step=action_step,
-						next_time_step=time_step_new))
+				add_batch(
+					time_step_old=time_step_old,
+					action_step=action_step,
+					time_step_new=time_step_new)
 
-			# Run a single train step
-			if self.age > 2:
+			# Run a single train step, if there is replay_buffer data to do so
+			if self.step > 2:
 				self.train_loss = train_step()
 
-			action_step = self.agent.collect_policy.action(
-				time_step_new, policy_state)
+			# TODO: Figure out a more concrete value for exploration
+			if random.random() < 0.9:
+				action_step = self.agent.collect_policy.action(
+					time_step_new, policy_state)
+			else:
+				action_step = policy_step.PolicyStep(
+					action=np.array([random.randint(0, len(self.CHOICES) - 1)]),
+					state=(),
+					info=())
 			policy_state = action_step.state
 
 			yield self.CHOICES[int(action_step[0][0])]

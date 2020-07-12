@@ -3,6 +3,7 @@ from mock import patch
 from crawlai.game_scripts.world import World
 from crawlai.items.critter.critter import Critter
 from crawlai.items.critter.base_critter import BaseCritter
+from crawlai.items.critter.mixins.random_move_mixin import RandomMoveMixin
 from crawlai.items.food import Food
 from crawlai.turn import Turn
 from crawlai.position import Position
@@ -15,20 +16,23 @@ def test_dies_of_hunger(world: World):
 
 	# Instantiate the world
 	world.min_num_food = 0
-	world.min_num_critters = 1
+	world.min_num_critters = 0
 	world._ready()
+
+	world.add_item(world.grid.random_free_cell, RandomMoveMixin())
 
 	assert len(list(world.grid)) == 1
 
-	n_steps_till_death = int(Critter.MAX_HEALTH / Critter.HEALTH_TICK_PENALTY)
-
+	n_steps_till_death = int(BaseCritter.MAX_HEALTH
+							 / BaseCritter.HEALTH_TICK_PENALTY)
+	print("n steps", n_steps_till_death)
 	with patch.object(world.grid, 'delete_item',
 					  wraps=world.grid.delete_item) as delete_item:
 		for i in range(n_steps_till_death - 1):
 			world._process()
 			assert not delete_item.called
 			validate_grid(world.grid)
-
+		print("health", list(world.grid)[0].health)
 		world._process()
 		assert delete_item.called
 		validate_grid(world.grid)
@@ -39,6 +43,7 @@ def test_consumes_food_then_dies(world: World):
 
 	class FoodEater(BaseCritter):
 		def get_turn(self, grid) -> Turn:
+			self._tick_stats()
 			return Turn(Position(1, 0), is_action=True)
 
 	world.min_num_critters = 0

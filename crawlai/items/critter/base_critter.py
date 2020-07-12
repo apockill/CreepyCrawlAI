@@ -3,6 +3,8 @@ from godot.bindings import ResourceLoader
 from crawlai.grid_item import GridItem
 from crawlai.items.food import Food
 from crawlai.math_utils import clamp
+from crawlai.turn import Turn
+from crawlai.position import Position
 
 _critter_resource = ResourceLoader.load("res://Game/Critter/Critter.tscn")
 
@@ -12,6 +14,12 @@ class BaseCritter(GridItem):
 	HEALTH_TICK_PENALTY = 1
 	MAX_HEALTH = 500
 	BITE_SIZE = 20
+
+	CHOICES = [
+				  Turn(Position(*c), is_action)
+				  for c in [(0, 1), (1, 0), (-1, 0), (0, -1)]
+				  for is_action in (True, False)
+			  ] + [Turn(Position(0, 0), False)]
 
 	def __init__(self):
 		super().__init__()

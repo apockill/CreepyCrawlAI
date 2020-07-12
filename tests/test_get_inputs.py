@@ -146,45 +146,50 @@ def test_instance_grid_is_cached():
 				is not changed)
 
 	# Initialize the cache
-	extract_inputs.get_instance_grid(
-		grid,
-		pos=Position(1, 1),
-		radius=5,
-		layers=Critter.LAYERS)
+	with grid as locked_grid:
+		extract_inputs.get_instance_grid(
+			locked_grid,
+			pos=Position(1, 1),
+			radius=5,
+			layers=Critter.LAYERS)
 
 	# Verify the cache doesn't change if the grid hasn't changed
 	for i in range(10):
 		last_cache = extract_inputs._instance_grid_cache.copy()
-		extract_inputs.get_instance_grid(
-			grid,
-			pos=Position(1, 1),
-			radius=5,
-			layers=Critter.LAYERS)
+		with grid as locked_grid:
+			extract_inputs.get_instance_grid(
+				locked_grid,
+				pos=Position(1, 1),
+				radius=5,
+				layers=Critter.LAYERS)
 		validate_cache_changes(False, last_cache)
 
 	# Verify that the cache reloads when the radius changes
 	last_cache = extract_inputs._instance_grid_cache.copy()
-	extract_inputs.get_instance_grid(
-		grid,
-		pos=Position(1, 1),
-		radius=10,
-		layers=Critter.LAYERS)
+	with grid as locked_grid:
+		extract_inputs.get_instance_grid(
+			locked_grid,
+			pos=Position(1, 1),
+			radius=10,
+			layers=Critter.LAYERS)
 	validate_cache_changes(True, last_cache)
 
 	# Verify the cache reloads when the layers change
 	last_cache = extract_inputs._instance_grid_cache.copy()
-	extract_inputs.get_instance_grid(
-		grid,
-		pos=Position(1, 1),
-		radius=10,
-		layers={"Critter": 1})
+	with grid as locked_grid:
+		extract_inputs.get_instance_grid(
+			locked_grid,
+			pos=Position(1, 1),
+			radius=10,
+			layers={"Critter": 1})
 	validate_cache_changes(True, last_cache)
 
 	# Verify the cache does _not_ reload when position is changed
 	last_cache = extract_inputs._instance_grid_cache.copy()
-	extract_inputs.get_instance_grid(
-		grid,
-		pos=Position(1, 2),
-		radius=10,
-		layers={"Critter": 1})
+	with grid as locked_grid:
+		extract_inputs.get_instance_grid(
+			locked_grid,
+			pos=Position(1, 2),
+			radius=10,
+			layers={"Critter": 1})
 	validate_cache_changes(False, last_cache)

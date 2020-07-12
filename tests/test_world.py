@@ -23,7 +23,7 @@ def undying_base_critter_type():
 def test_random_movement_persists_safely(undying_base_critter_type,
 										 world: World):
 	"""Basically, make sure things don't crash during normal use"""
-	world.min_num_critters = 50
+	world.min_num_critters = 10
 	world.min_num_food = 100
 	world.grid_height = 25
 	world.grid_width = 15
@@ -34,12 +34,12 @@ def test_random_movement_persists_safely(undying_base_critter_type,
 
 	# Simulate the world for various ticks, asserting that the board state
 	# is changing between ticks (very, _very_ unlikely that it doesn't)
+	state_before = world.grid.array.copy()
 	for i in range(0, n_ticks):
-		state_before = world.grid.array.copy()
-		world._process(i)
-		assert (state_before != world.grid.array).any(), \
-			f"There was no change in the grid!\n{world.grid.array}"
+		world._process()
 		validate_grid(world.grid)
+	assert not (state_before == world.grid.array).all(), \
+		f"There was no change in the grid!\n{world.grid.array}"
 
 
 def test_add_item(world: World):

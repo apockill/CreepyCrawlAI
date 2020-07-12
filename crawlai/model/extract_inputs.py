@@ -10,7 +10,7 @@ from crawlai.math_utils import clamp
 from crawlai.items.food import Food
 from crawlai.grid_item import GridItem
 
-INPUT_DTYPE = np.int32
+INPUT_DTYPE = np.int
 """The smallest int type accepted by tensorflow"""
 
 # TODO: Implement caching

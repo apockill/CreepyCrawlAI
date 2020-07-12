@@ -1,4 +1,4 @@
-from typing import Type, Optional
+from typing import Optional
 from multiprocessing.pool import ThreadPool
 from collections import Counter
 

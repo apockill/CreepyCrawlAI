@@ -1,14 +1,10 @@
-from typing import Dict, Type
+from typing import Dict
 from threading import RLock
-from functools import lru_cache
 
 import numpy as np
 
 from crawlai.grid import Grid
 from crawlai.position import Position
-from crawlai.math_utils import clamp
-from crawlai.items.food import Food
-from crawlai.grid_item import GridItem
 
 INPUT_DTYPE = np.int
 """The smallest int type accepted by tensorflow"""
@@ -18,7 +14,7 @@ _generate_layered_grid_lock = RLock()
 """Because generating the full layered grid is a bit expensive, it's best for
 one thread to process this and the rest of them to use the cached result. """
 _instance_grid_cache: Dict[int, np.ndarray] = {}
-"""Holds a dictionary of a single value, of format 
+"""Holds a dictionary of a single value, of format
 {hash(grid.array.data.tobytes(), ): instance_grid} """
 
 

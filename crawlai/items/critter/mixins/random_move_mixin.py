@@ -6,6 +6,6 @@ from crawlai.turn import Turn
 
 
 class RandomMoveMixin(BaseCritter):
-	def get_turn(self, grid) -> Optional[Turn]:
-		self._tick_stats()
-		return choice(self.CHOICES)
+    def get_turn(self, grid) -> Optional[Turn]:
+        self._tick_stats()
+        return choice(self.CHOICES)

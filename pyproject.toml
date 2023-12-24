@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "creepycrawlai"
+name = "crawlai"
 version = "0.1.0"
 description = "A deep neural network evolutionary sim, for interactive passive art displays."
 authors = ["apockill <apocthiel@gmail.com>"]

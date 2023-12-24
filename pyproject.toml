@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "creepycrawlai"
+version = "0.1.0"
+description = "A deep neural network evolutionary sim, for interactive passive art displays."
+authors = ["Alex Thiele <apocthiel@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+numpy = "1.22.0"
+tf-agents = "0.5.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

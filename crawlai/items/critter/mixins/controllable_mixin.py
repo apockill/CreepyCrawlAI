@@ -1,7 +1,7 @@
 from godot.bindings import Input
 
-from crawlai.items.critter.base_critter import BaseCritter
 from crawlai import keybindings
+from crawlai.items.critter.base_critter import BaseCritter
 from crawlai.position import Position
 from crawlai.turn import Turn
 

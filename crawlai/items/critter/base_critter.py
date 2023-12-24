@@ -3,8 +3,8 @@ from godot.bindings import ResourceLoader
 from crawlai.grid_item import GridItem
 from crawlai.items.food import Food
 from crawlai.math_utils import clamp
-from crawlai.turn import Turn
 from crawlai.position import Position
+from crawlai.turn import Turn
 
 _critter_resource = ResourceLoader.load("res://Game/Critter/Critter.tscn")
 

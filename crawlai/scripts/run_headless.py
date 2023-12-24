@@ -2,9 +2,9 @@ import random
 
 import tensorflow as tf
 
+from crawlai.game_scripts.world import World
 from tests import monkeypatch_godot_import
 from tests.helpers import Timer
-from crawlai.game_scripts.world import World
 
 
 def main(ticks_per_report):

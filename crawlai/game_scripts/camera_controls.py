@@ -1,17 +1,10 @@
 import math
 
-from godot import exposed, export
-from godot.bindings import (
-    Camera2D,
-    Vector2,
-    Input,
-    BUTTON_MIDDLE,
-    BUTTON_RIGHT,
-    BUTTON_WHEEL_UP,
-    InputEventMouseButton,
-    BUTTON_WHEEL_DOWN,
-)
 import numpy as np
+from godot import export, exposed
+from godot.bindings import (BUTTON_MIDDLE, BUTTON_RIGHT, BUTTON_WHEEL_DOWN,
+                            BUTTON_WHEEL_UP, Camera2D, Input,
+                            InputEventMouseButton, Vector2)
 
 zoom_signs = {BUTTON_WHEEL_UP: 1, BUTTON_WHEEL_DOWN: -1}
 

@@ -2,10 +2,9 @@ import random
 
 import pytest
 
-from tests import monkeypatch_godot_import
-from tests import helpers
 from crawlai.game_scripts.world import World
 from crawlai.model import extract_inputs
+from tests import helpers, monkeypatch_godot_import
 
 
 @pytest.fixture(autouse=True)

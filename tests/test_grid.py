@@ -1,10 +1,10 @@
 import pytest
 from mock import patch
 
-from crawlai.position import Position
 from crawlai.grid import Grid
 from crawlai.items.critter.critter import Critter
 from crawlai.items.food import Food
+from crawlai.position import Position
 from tests.helpers import validate_grid
 
 test_add_item_parameters = [

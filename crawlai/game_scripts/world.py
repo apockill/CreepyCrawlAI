@@ -1,8 +1,8 @@
-from typing import Optional
-from multiprocessing.pool import ThreadPool
 from collections import Counter
+from multiprocessing.pool import ThreadPool
+from typing import Optional
 
-from godot import exposed, export
+from godot import export, exposed
 from godot.bindings import Node2D, Vector2
 
 from crawlai.grid import Grid

@@ -1,5 +1,5 @@
-from typing import Dict
 from threading import RLock
+from typing import Dict
 
 import numpy as np
 

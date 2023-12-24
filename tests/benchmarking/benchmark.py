@@ -1,15 +1,15 @@
-import random
 import os
+import random
 from pathlib import Path
 from time import time
 
 import tensorflow as tf
 from progress.bar import IncrementalBar
 
-from tests import monkeypatch_godot_import
-from tests.helpers import Timer
 from crawlai.game_scripts.world import World
 from crawlai.items.critter.critter import Critter
+from tests import monkeypatch_godot_import
+from tests.helpers import Timer
 
 
 def main(min_num_critters, n_ticks):

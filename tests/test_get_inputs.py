@@ -1,10 +1,9 @@
+import numpy as np
 import pytest
 
-import numpy as np
-
-from crawlai.model import extract_inputs
 from crawlai.grid import Grid
 from crawlai.items.critter.critter import Critter
+from crawlai.model import extract_inputs
 from crawlai.position import Position
 
 # Layer codes for this test.

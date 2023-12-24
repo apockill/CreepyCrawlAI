@@ -1,13 +1,12 @@
-from mock import patch
 import pytest
-
 from godot.bindings import Node
+from mock import patch
 
-from crawlai.items.critter.critter import Critter
-from crawlai.items.critter.base_critter import BaseCritter
 from crawlai.game_scripts.world import World
-from crawlai.position import Position
+from crawlai.items.critter.base_critter import BaseCritter
+from crawlai.items.critter.critter import Critter
 from crawlai.items.food import Food
+from crawlai.position import Position
 from crawlai.turn import Turn
 from tests.helpers import validate_grid
 

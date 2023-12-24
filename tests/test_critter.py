@@ -1,12 +1,12 @@
 from mock import patch
 
 from crawlai.game_scripts.world import World
-from crawlai.items.critter.critter import Critter
 from crawlai.items.critter.base_critter import BaseCritter
+from crawlai.items.critter.critter import Critter
 from crawlai.items.critter.mixins.random_move_mixin import RandomMoveMixin
 from crawlai.items.food import Food
-from crawlai.turn import Turn
 from crawlai.position import Position
+from crawlai.turn import Turn
 from tests.helpers import validate_grid
 
 

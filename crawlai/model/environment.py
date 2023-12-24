@@ -1,10 +1,19 @@
+from typing import Any
+
 import numpy as np
+import numpy.typing as npt
 from tf_agents.environments.py_environment import PyEnvironment
 from tf_agents.specs import array_spec
 
 
 class CritterEnvironment(PyEnvironment):
-    def __init__(self, input_radius, input_dtype, n_choices, n_layers):
+    def __init__(
+        self,
+        input_radius: int,
+        input_dtype: npt.DTypeLike,
+        n_choices: int,
+        n_layers: int,
+    ):
         super().__init__()
         input_shape = (input_radius * 2 + 1, input_radius * 2 + 1, n_layers)
         self._observation_spec = array_spec.ArraySpec(
@@ -17,20 +26,20 @@ class CritterEnvironment(PyEnvironment):
         )
 
     @property
-    def batched(self):
+    def batched(self) -> bool:
         """By saying we are batched, then when TFPyEnvironment wraps this class
         it won't bother re-wrapping this environment in a BatchedPyEnvironment.
         """
         return True
 
     @property
-    def batch_size(self):
+    def batch_size(self) -> int:
         """By saying we are batched, then when TFPyEnvironment wraps this class
         it won't bother re-wrapping this environment in a BatchedPyEnvironment.
         """
         return 1
 
-    def observation_spec(self):
+    def observation_spec(self) -> array_spec.ArraySpec:
         """Defines the observations provided by the environment.
 
         May use a subclass of `ArraySpec` that specifies additional properties such
@@ -42,7 +51,7 @@ class CritterEnvironment(PyEnvironment):
 
         return self._observation_spec
 
-    def action_spec(self):
+    def action_spec(self) -> array_spec.BoundedArraySpec:
         """Defines the actions that should be provided to `step()`.
 
         May use a subclass of `ArraySpec` that specifies additional properties such
@@ -53,17 +62,17 @@ class CritterEnvironment(PyEnvironment):
         """
         return self._action_spec
 
-    def _step(self, action):
+    def _step(self, action: Any) -> None:
         raise NotImplementedError
 
-    def _reset(self):
+    def _reset(self) -> None:
         raise NotImplementedError
 
-    def get_info(self):
+    def get_info(self) -> None:
         raise NotImplementedError
 
-    def get_state(self):
+    def get_state(self) -> None:
         raise NotImplementedError
 
-    def set_state(self, state):
+    def set_state(self, state: Any) -> None:
         raise NotImplementedError

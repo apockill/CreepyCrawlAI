@@ -1,22 +1,25 @@
 import random
-from typing import Dict
+from typing import Any, Callable, Generator, TypeVar, cast
 
 import numpy as np
+import numpy.typing as npt
 
 from crawlai.grid_item import GridItem
 from crawlai.position import Position
 
+SomeCallable = TypeVar("SomeCallable", bound=Callable[..., Any])
 
-def lockable(fn):
+
+def lockable(fn: SomeCallable) -> SomeCallable:
     """Raises a WritingToLockedGrid exception when this method is accessed
     on a locked grid"""
 
-    def wrapper(self: "Grid", *args, **kwargs):
+    def wrapper(self: "Grid", *args: Any, **kwargs: Any) -> Any:
         if self.locked:
             raise Grid.WritingToLockedGrid
         return fn(self, *args, **kwargs)
 
-    return wrapper
+    return cast(SomeCallable, wrapper)
 
 
 class Grid:
@@ -24,38 +27,40 @@ class Grid:
         """Raised when a grid array is going to be changed, but the grid is
         in a locked state"""
 
-    def __init__(self, width, height):
+    def __init__(self, width: int, height: int) -> None:
         # Grid parameters
         self.width: int = width
         self.height: int = height
         self.locked = False
-        self._hash_cache = None
+        self._hash_cache: int | None = None
 
         # Grid state
-        self.array: np.ndarray = np.zeros(shape=(width, height), dtype=np.int_)
+        self.array: npt.NDArray[np.int8] = np.zeros(
+            shape=(width, height), dtype=np.int_
+        )
         """Holds the instance ids of each object. 0 means empty"""
-        self.id_to_obj: Dict[int, GridItem] = {}
-        self.id_to_pos: Dict[int, Position] = {}
+        self.id_to_obj: dict[int, GridItem] = {}
+        self.id_to_pos: dict[int, Position] = {}
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         """Only hashable when the grid is locked"""
         if self.locked:
+            assert self._hash_cache is not None
             return self._hash_cache
         else:
             raise TypeError("A grid cannot be hashed when unlocked")
 
-    def __iter__(self):
-        for grid_item in self.id_to_obj.values():
-            yield grid_item
+    def __iter__(self) -> Generator[GridItem, None, None]:
+        yield from self.id_to_obj.values()
 
-    def __enter__(self):
+    def __enter__(self) -> "Grid":
         """Lock the grid, and cache the grid.array hashes"""
         self.array.flags.writeable = False
         self.locked = True
         self._hash_cache = hash(self.array.data.tobytes())
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         self.array.flags.writeable = True
         self.locked = False
         self._hash_cache = None
@@ -75,7 +80,7 @@ class Grid:
         return True
 
     @lockable
-    def delete_item(self, grid_item: GridItem):
+    def delete_item(self, grid_item: GridItem) -> None:
         """Dereference everything about the item, and then queue_free the
         instance"""
         pos = self.id_to_pos.pop(grid_item.id)
@@ -115,7 +120,9 @@ class Grid:
         )
 
     @lockable
-    def try_move_item(self, pos: Position, grid_item: GridItem, is_new=False) -> bool:
+    def try_move_item(
+        self, pos: Position, grid_item: GridItem, is_new: bool = False
+    ) -> bool:
         if not self.is_empty_coord(pos):
             return False
         if not is_new:
@@ -129,7 +136,7 @@ class Grid:
 
         return True
 
-    def is_empty_coord(self, pos: Position):
+    def is_empty_coord(self, pos: Position) -> bool:
         """Checks if this is a valid coordinate to move a critter into"""
         # Verify there is no object in that position
         try:
@@ -140,7 +147,7 @@ class Grid:
             return False
 
     @property
-    def random_free_cell(self):
+    def random_free_cell(self) -> Position:
         """Gets a random free cell"""
         free = np.argwhere(self.array == 0)
         return Position(*random.choice(free))

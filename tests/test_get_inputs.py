@@ -1,4 +1,7 @@
+from typing import Hashable
+
 import numpy as np
+import numpy.typing as npt
 import pytest
 
 from crawlai.grid import Grid
@@ -66,7 +69,9 @@ test_get_grid_around_parameters = [
     argnames=("pos", "radius", "expected_occupied_layers"),
     argvalues=test_get_grid_around_parameters,
 )
-def test_get_grid_around(pos, radius, expected_occupied_layers):
+def test_get_grid_around(
+    pos: tuple[int, int], radius: int, expected_occupied_layers: npt.NDArray[np.int8]
+) -> None:
     """Creates a grid of shape:
     [[0 0 0 0 0]
      [0 0 0 0 0]
@@ -120,7 +125,7 @@ def test_get_grid_around(pos, radius, expected_occupied_layers):
             )
 
 
-def test_instance_grid_is_cached():
+def test_instance_grid_is_cached() -> None:
     """Verify that the instance grid is calculated once and reused for the
     various different threads/critters"""
     grid = Grid(width=3, height=3)
@@ -131,7 +136,9 @@ def test_instance_grid_is_cached():
         len(list(extract_inputs._instance_grid_cache.keys())) == 0
     ), "The caches should start out empty!"
 
-    def validate_cache_changes(changed, last_cache):
+    def validate_cache_changes(
+        changed: bool, last_cache: dict[Hashable, npt.NDArray[np.int8]]
+    ) -> None:
         cache = extract_inputs._instance_grid_cache
         assert len(cache) == 1
         assert (list(last_cache.keys())[0] == list(cache.keys())[0]) is not changed

@@ -7,7 +7,7 @@ from tests import monkeypatch_godot_import
 from tests.helpers import Timer
 
 
-def main(ticks_per_report):
+def main(ticks_per_report: int) -> None:
     tf.random.set_seed(1)
     random.seed("benchmark")
 

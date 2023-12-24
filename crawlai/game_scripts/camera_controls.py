@@ -29,7 +29,7 @@ class PanZoomCamera(Camera2D):
             return target
         return current + math.copysign(max_delta, dist)
 
-    def _process(self, delta):
+    def _process(self, delta: float) -> None:
         cur_mouse_pos = self.get_viewport().get_mouse_position()
 
         # mouse panning

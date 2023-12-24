@@ -1,7 +1,7 @@
 import threading
 
 
-def verify_all_threads_closed(allowable_threads=None):
+def verify_all_threads_closed(allowable_threads: list[str] | None = None) -> None:
     """Verify that all threads have been closed, aside from allowable threads.
 
     Borrowed this function from the test helper functions in this repo:
@@ -22,7 +22,7 @@ def verify_all_threads_closed(allowable_threads=None):
     ]
 
     if len(open_threads) != 0:
-        raise EnvironmentError(
+        raise OSError(
             "Not all threads were shut down! Currently running threads: "
             + str(open_threads)
         )

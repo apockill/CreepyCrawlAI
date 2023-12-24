@@ -12,7 +12,7 @@ from tests import monkeypatch_godot_import
 from tests.helpers import Timer
 
 
-def main(min_num_critters, n_ticks):
+def main(min_num_critters: int, n_ticks: int) -> None:
     tf.random.set_seed(1)
     random.seed("benchmark")
 
@@ -64,7 +64,7 @@ def main(min_num_critters, n_ticks):
             f"\nTPS: {tps}, "
             f"AVG TOTAL REWARD: {avg_total_reward}, "
             f"AVG DEATHS: {avg_total_deaths}, "
-            f"| N_TICKS: {N_TICKS} "
+            f"| N_TICKS: {n_ticks} "
             f"world.min_num_critters: {world.min_num_critters}, "
             f"world.min_num_food {world.min_num_food}, "
             f"world.grid_width {world.grid_width}, "

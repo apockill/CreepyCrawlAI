@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 from pathlib import Path
 
 new_instance_id = 1

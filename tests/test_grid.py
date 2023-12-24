@@ -1,5 +1,6 @@
+from unittest.mock import patch
+
 import pytest
-from mock import patch
 
 from crawlai.grid import Grid
 from crawlai.items.critter.critter import Critter
@@ -20,12 +21,12 @@ test_add_item_parameters = [
 
 
 @pytest.mark.parametrize(
-    argnames=("w", "h", "successful", "pos"), argvalues=test_add_item_parameters
+    argnames=("w", "h", "successful", "xy"), argvalues=test_add_item_parameters
 )
-def test_add_item(w, h, successful, pos):
+def test_add_item(w: int, h: int, successful: bool, xy: tuple[int, int]) -> None:
     grid = Grid(width=w, height=h)
     item = Critter()
-    pos = Position(*pos)
+    pos = Position(*xy)
 
     validate_grid(grid)
     added = grid.add_item(pos, item)
@@ -43,7 +44,7 @@ def test_add_item(w, h, successful, pos):
     validate_grid(grid)
 
 
-def test_apply_action_in_different_scenarios():
+def test_apply_action_in_different_scenarios() -> None:
     grid = Grid(width=3, height=3)
     item = Critter()
     grid.add_item(Position(0, 0), grid_item=item)
@@ -88,7 +89,7 @@ test_move_item_parameters = [
 @pytest.mark.parametrize(
     argnames=("pos", "expected_success"), argvalues=test_move_item_parameters
 )
-def test_move_item(pos, expected_success):
+def test_move_item(pos: tuple[int, int], expected_success: bool) -> None:
     grid = Grid(width=3, height=3)
     item = Critter()
     start_pos = Position(0, 0)
@@ -107,7 +108,7 @@ def test_move_item(pos, expected_success):
     assert grid.array[expected_pos.x][expected_pos.y] == item.id
 
 
-def test_grid_locking():
+def test_grid_locking() -> None:
     """Test that a grid is locked while in a context manager"""
     grid = Grid(width=5, height=100)
     item = Critter()

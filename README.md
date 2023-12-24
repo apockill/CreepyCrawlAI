@@ -3,17 +3,21 @@
 
 Pronounced CreepyCrawl-y. 
 
-## Installing Dependencies
-Run the following commands, changing "x11-64-cpython" to be the correct
-godot-python distribution for your platform (available under the `pythonscript/`
+## Running the Project
+### Installing dependencies
+Run the following commands, changing "PLATFORM" and "PYTHON" to be the correct
+godot-python distribution for your platform (available under the `addons/pythonscript/`
 directory).
-
-### For running the project:
 ```bash
-pip install --upgrade -r requirements.txt --target pythonscript/x11-64-cpython/lib/python3.6/site-packages
+PLATFORM=addons/pythonscript/x11-64
+PYTHON=$PLATFORM/bin/python3.7
+chmod +x $PYTHON
+export LD_PRELOAD=\"$(printf %q "$(realpath $PLATFORM/lib/libpython3.7m.so.1.0)")\"
+export LD_PRELOAD=$PLATFORM/lib/libpython3.7m.so.1.0
+$PYTHON -m pip install --upgrade pip
+$PYTHON -m pip install --upgrade -r requirements.txt
 ```
 
-### For tests:
 Running tests doesn't require installing the testing libraries into the
 `pythonscript/` installation. Virtualenv is recommended!
 ```

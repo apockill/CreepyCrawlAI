@@ -12,15 +12,14 @@ from crawlai.game_scripts.world import World
 from crawlai.items.critter.critter import Critter
 
 
-def main():
+def main(min_num_critters, n_ticks):
 	tf.random.set_seed(1)
 	random.seed("benchmark")
 
-	N_TICKS = 30
 
 	"""Set up benchmark parameters"""
 	world = World()
-	world.min_num_critters = 1000
+	world.min_num_critters = min_num_critters
 	world.min_num_food = 500
 	world.grid_width = 250
 	world.grid_height = 250
@@ -49,15 +48,23 @@ def main():
 
 	print("\nBeginning Benchmark...")
 	start = time()
-	for _ in IncrementalBar().iter(list(range(N_TICKS))):
+	for _ in IncrementalBar().iter(list(range(n_ticks))):
 		world._process()
-	tps = round(N_TICKS / (time() - start), 3)
+	tps = round(n_ticks / (time() - start), 3)
 
 	with Path("tests/benchmarking/benchmark.txt").open("a") as f:
 		CUDA_VISIBLE_DEVICES = os.environ.get('CUDA_VISIBLE_DEVICES', None)
+		critters = [c for c in world.grid if isinstance(c, Critter)]
+		print("Critters", critters)
+		steps = int(critters[0].steps)
+		avg_total_reward = round(sum(float(c.total_reward) for c in critters)
+								 / steps, 1)
+		avg_total_deaths = round(sum(c.deaths for c in critters) / steps, 1)
 		report = (
-			f"\nBenchmark: {tps} TPS. "
-			f"N_TICKS: {N_TICKS} "
+			f"\nTPS: {tps}, "
+			f"AVG TOTAL REWARD: {avg_total_reward}, "
+			f"AVG DEATHS: {avg_total_deaths}, "
+			f"| N_TICKS: {N_TICKS} "
 			f"world.min_num_critters: {world.min_num_critters}, "
 			f"world.min_num_food {world.min_num_food}, "
 			f"world.grid_width {world.grid_width}, "
@@ -73,4 +80,4 @@ def main():
 
 
 if __name__ == "__main__":
-	main()
+	main(20, 100)

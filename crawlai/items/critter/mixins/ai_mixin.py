@@ -51,8 +51,12 @@ class AICritterMixin(BaseCritter):
 		super().__init__()
 		# Stats
 		self.train_loss = None
-		self.step = 0
+		self.steps = 0
 		self._last_step_health = self.health
+
+		# Stats purely for logging
+		self.deaths = 0
+		self.total_reward = 0
 
 		# Created on the first call of self.next_step
 		self._move_loop_generator = None
@@ -70,6 +74,7 @@ class AICritterMixin(BaseCritter):
 		q_net = QNetwork(
 			self.env.observation_spec(),
 			self.env.action_spec())
+
 		self.agent = DqnAgent(
 			time_step_spec=self.env.time_step_spec(),
 			action_spec=self.env.action_spec(),
@@ -129,10 +134,12 @@ class AICritterMixin(BaseCritter):
 		while True:
 			try:
 				time_step_new = next(time_step_iterator)
-				self.step += 1
+				self.steps += 1
+				self.total_reward += time_step_new.reward
 			except StopIteration:
 				# It's important to reset time_step_old so we never get a
 				# trajectory that goes from END to FIRST
+				self.deaths += 1
 				time_step_old = None
 				time_step_iterator = self._perform_episode(grid)
 				continue
@@ -145,7 +152,7 @@ class AICritterMixin(BaseCritter):
 					time_step_new=time_step_new)
 
 			# Run a single train step, if there is replay_buffer data to do so
-			if self.step > 2:
+			if self.steps > 2:
 				self.train_loss = train_step()
 
 			# TODO: Figure out a more concrete value for exploration

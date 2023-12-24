@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "creepycrawlai"
+version = "0.1.0"
+description = "A deep neural network evolutionary sim, for interactive passive art displays."
+authors = ["Alex Thiele <apocthiel@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+# Add run_headless.py
+packages = [{ include = "crawlai" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.12"
+numpy = "^1.26.2"
+tf-agents = "0.19.0"
+tensorflow = "2.15.0"
+
+[tool.poetry.scripts]
+run_headless = "crawlai.scripts.run_headless:main"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

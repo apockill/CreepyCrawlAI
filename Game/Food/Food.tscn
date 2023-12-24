@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=2]
-
-[ext_resource path="res://Game/Food/food.png" type="Texture" id=1]
-
-[node name="Food" type="Sprite"]
-texture = ExtResource( 1 )

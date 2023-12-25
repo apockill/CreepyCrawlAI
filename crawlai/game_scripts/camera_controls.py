@@ -2,9 +2,16 @@ import math
 
 import numpy as np
 from godot import export, exposed
-from godot.bindings import (BUTTON_MIDDLE, BUTTON_RIGHT, BUTTON_WHEEL_DOWN,
-                            BUTTON_WHEEL_UP, Camera2D, Input,
-                            InputEventMouseButton, Vector2)
+from godot.bindings import (
+    BUTTON_MIDDLE,
+    BUTTON_RIGHT,
+    BUTTON_WHEEL_DOWN,
+    BUTTON_WHEEL_UP,
+    Camera2D,
+    Input,
+    InputEventMouseButton,
+    Vector2,
+)
 
 zoom_signs = {BUTTON_WHEEL_UP: 1, BUTTON_WHEEL_DOWN: -1}
 
@@ -29,7 +36,7 @@ class PanZoomCamera(Camera2D):
             return target
         return current + math.copysign(max_delta, dist)
 
-    def _process(self, delta):
+    def _process(self, delta: float) -> None:
         cur_mouse_pos = self.get_viewport().get_mouse_position()
 
         # mouse panning

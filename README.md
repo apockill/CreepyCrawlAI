@@ -1,32 +1,50 @@
 # CreepyCrawlAI
-<img align="center" src="https://github.com/apockill/CreepyCrawlAI/workflows/Tests/badge.svg">
+A deep neural network evolutionary sim, for interactive passive art displays.
+_________________
 
-Pronounced CreepyCrawl-y. 
+[![PyPI version](https://badge.fury.io/py/creepycrawlai.svg)](http://badge.fury.io/py/creepycrawlai)
+[![Test Status](https://github.com/apockill/creepycrawlai/workflows/Test/badge.svg?branch=main)](https://github.com/apockill/creepycrawlai/actions?query=workflow%3ATest)
+[![Lint Status](https://github.com/apockill/creepycrawlai/workflows/Lint/badge.svg?branch=main)](https://github.com/apockill/creepycrawlai/actions?query=workflow%3ALint)
+[![codecov](https://codecov.io/gh/apockill/creepycrawlai/branch/main/graph/badge.svg)](https://codecov.io/gh/apockill/creepycrawlai)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://timothycrosley.github.io/isort/)
+_________________
 
-## Running the Project
-### Installing dependencies
-Run the following commands, changing "PLATFORM" and "PYTHON" to be the correct
-godot-python distribution for your platform (available under the `addons/pythonscript/`
-directory).
-```bash
-PLATFORM=addons/pythonscript/x11-64
-PYTHON=$PLATFORM/bin/python3.7
-chmod +x $PYTHON
-export LD_PRELOAD=\"$(printf %q "$(realpath $PLATFORM/lib/libpython3.7m.so.1.0)")\"
-export LD_PRELOAD=$PLATFORM/lib/libpython3.7m.so.1.0
-$PYTHON -m pip install --upgrade pip
-$PYTHON -m pip install --upgrade -r requirements.txt
+[Read Latest Documentation](https://apockill.github.io/creepycrawlai/) - [Browse GitHub Code Repository](https://github.com/apockill/creepycrawlai/)
+_________________
+
+## Running the Simulation
+
+You can run this project in headless and... headfull? Rendered? mode. To do both:
+
+```shell
+# Install dependencies
+poetry install
+poetry shell
+
+# Run the desired script
+run_headless
+run_rendered
 ```
 
-Running tests doesn't require installing the testing libraries into the
-`pythonscript/` installation. Virtualenv is recommended!
-```
-pip install -r requirements.txt -r tests/requirements.txt
+## Development
+
+### Installing python dependencies
+```shell
+poetry install
 ```
 
-## Running Tests
-All tests are under `tests/`. To avoid accidentally running the godot-python 
-tests, run 
+### Running Tests
+```shell
+pytest .
 ```
-pytests tests/
+
+### Formatting Code
+```shell
+bash .github/format.sh
+```
+
+### Linting
+```shell
+bash .github/check_lint.sh
 ```

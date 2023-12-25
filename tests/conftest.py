@@ -1,14 +1,15 @@
 import random
+from collections.abc import Generator
 
 import pytest
 
 from crawlai.game_scripts.world import World
 from crawlai.model import extract_inputs
-from tests import helpers, monkeypatch_godot_import
+from tests import helpers, monkeypatch_godot_import  # noqa:F401
 
 
 @pytest.fixture(autouse=True)
-def each_test_setup_teardown():
+def each_test_setup_teardown() -> Generator[None, None, None]:
     random.seed("3")
 
     # Reset instance ID count to 0 before each test
@@ -26,7 +27,7 @@ def each_test_setup_teardown():
 
 
 @pytest.fixture
-def world():
+def world() -> Generator[World, None, None]:
     """Returns a world and closes threads after the test"""
     world = World()
     yield world

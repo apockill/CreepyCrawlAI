@@ -1,3 +1,5 @@
+from typing import Any
+
 from godot.bindings import ResourceLoader
 
 from crawlai.grid_item import GridItem
@@ -22,28 +24,28 @@ class BaseCritter(GridItem):
         for is_action in (True, False)
     ] + [Turn(Position(0, 0), False)]
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.health: int
         self.age: int
         self._reset_stats()
 
-    def _reset_stats(self):
+    def _reset_stats(self) -> None:
         self.health = self.MAX_HEALTH
         self.age = 0
 
-    def _tick_stats(self):
+    def _tick_stats(self) -> None:
         self.age += 1
         self.health -= self.HEALTH_TICK_PENALTY
 
-    def _load_instance(self):
+    def _load_instance(self) -> Any:
         return _critter_resource.instance()
 
-    def perform_action_onto(self, other: "GridItem"):
+    def perform_action_onto(self, other: "GridItem") -> None:
         if isinstance(other, Food):
             max_bite = clamp(self.BITE_SIZE, 0, self.MAX_HEALTH - self.health)
             self.health += other.take_nutrition(max_bite)
 
     @property
-    def delete_queued(self):
+    def delete_queued(self) -> bool:
         return self.health <= 0

@@ -3,11 +3,10 @@ import random
 import tensorflow as tf
 
 from crawlai.game_scripts.world import World
-from tests import monkeypatch_godot_import
 from tests.helpers import Timer
 
 
-def main(ticks_per_report):
+def main(ticks_per_report: int) -> None:
     tf.random.set_seed(1)
     random.seed("benchmark")
 
@@ -24,7 +23,7 @@ def main(ticks_per_report):
     print("Starting simulation...")
     while True:
         with Timer() as timer:
-            for i in range(ticks_per_report):
+            for _ in range(ticks_per_report):
                 world._process()
             print(f"TPS: {round(ticks_per_report / timer.elapsed, 2)}")
 

@@ -1,8 +1,12 @@
+from typing import Generator, cast
+from unittest.mock import patch
+
 import pytest
 from godot.bindings import Node
-from mock import patch
 
 from crawlai.game_scripts.world import World
+from crawlai.grid import Grid
+from crawlai.grid_item import GridItem
 from crawlai.items.critter.base_critter import BaseCritter
 from crawlai.items.critter.critter import Critter
 from crawlai.items.food import Food
@@ -12,14 +16,16 @@ from tests.helpers import validate_grid
 
 
 @pytest.fixture
-def undying_base_critter_type():
+def undying_base_critter_type() -> Generator[type[BaseCritter], None, None]:
     """Modifies the BaseCritter class to never die"""
     original_tick_penalty = BaseCritter.HEALTH_TICK_PENALTY
     yield BaseCritter
     BaseCritter.HEALTH_TICK_PENALTY = original_tick_penalty
 
 
-def test_random_movement_persists_safely(undying_base_critter_type, world: World):
+def test_random_movement_persists_safely(
+    undying_base_critter_type: BaseCritter, world: World
+) -> None:
     """Basically, make sure things don't crash during normal use"""
     world.min_num_critters = 10
     world.min_num_food = 100
@@ -33,7 +39,7 @@ def test_random_movement_persists_safely(undying_base_critter_type, world: World
     # Simulate the world for various ticks, asserting that the board state
     # is changing between ticks (very, _very_ unlikely that it doesn't)
     state_before = world.grid.array.copy()
-    for i in range(0, n_ticks):
+    for _ in range(0, n_ticks):
         world._process()
         validate_grid(world.grid)
     assert not (
@@ -41,7 +47,7 @@ def test_random_movement_persists_safely(undying_base_critter_type, world: World
     ).all(), f"There was no change in the grid!\n{world.grid.array}"
 
 
-def test_add_item(world: World):
+def test_add_item(world: World) -> None:
     world._ready()
 
     # Make sure world._ready() didn't instantiate anything
@@ -49,9 +55,8 @@ def test_add_item(world: World):
     validate_grid(world.grid)
 
     class FakeItem:
-        def __init__(self):
+        def __init__(self) -> None:
             self.instance = Node()
-            self.id = self.instance.get_instance_id()
 
         id = 29
 
@@ -59,13 +64,13 @@ def test_add_item(world: World):
         assert not Node.queue_free.called
 
         # Put an item in a location
-        item = world.add_item(pos=Position(0, 0), item=FakeItem())
+        item = world.add_item(pos=Position(0, 0), item=cast(GridItem, FakeItem()))
         validate_grid(world.grid)
         assert isinstance(item, FakeItem)
         assert not Node.queue_free.called
 
         # Try to put another item in the same location
-        item = world.add_item(pos=Position(0, 0), item=FakeItem())
+        item = world.add_item(pos=Position(0, 0), item=cast(GridItem, FakeItem()))
         assert Node.queue_free.called
         assert item is None
         validate_grid(world.grid)
@@ -94,8 +99,13 @@ test_critter_movement_parameters = [
     argvalues=test_critter_movement_parameters,
 )
 def test_critter_movement_and_actions(
-    pos, move, expected_pos, is_action, move_pos_occupied, world: World
-):
+    pos: tuple[int, int],
+    move: tuple[int, int],
+    expected_pos: tuple[int, int],
+    is_action: bool,
+    move_pos_occupied: bool,
+    world: World,
+) -> None:
     """Test different move cases and actions.
     If is_action is True, we verify that any critters that were in pos+move
     have their relevant functions called. If is_action performs onto an empty
@@ -114,7 +124,7 @@ def test_critter_movement_and_actions(
     """
 
     class PresetCritter(Critter):
-        def get_turn(self, inputs):
+        def get_turn(self, inputs: Grid) -> Turn:
             return Turn(Position(*move), is_action)
 
     # Instantiate the world
@@ -126,6 +136,7 @@ def test_critter_movement_and_actions(
 
     # Add the item at the initial position
     item = world.add_item(Position(*pos), item=PresetCritter())
+    assert item is not None
     assert len(list(world.grid)) == 1
     validate_grid(world.grid)
 
@@ -178,11 +189,11 @@ def test_critter_movement_and_actions(
     assert final_pos == Position(*expected_pos)
 
 
-def test_world_respawns_food(world):
+def test_world_respawns_food(world: World) -> None:
     world.min_num_food = 100
     world._ready()
 
-    def get_foods():
+    def get_foods() -> list[Food]:
         return [item for item in world.grid if isinstance(item, Food)]
 
     # Verify the world spawned food as expected before the first tick
@@ -193,7 +204,7 @@ def test_world_respawns_food(world):
     assert len(get_foods()) == world.min_num_food
 
     # Delete some food and verify the world respawns it
-    for i in range(10):
+    for _ in range(10):
         food_item = get_foods()[0]
         world.grid.delete_item(food_item)
     assert len(get_foods()) == world.min_num_food - 10

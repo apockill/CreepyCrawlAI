@@ -1,0 +1,16 @@
+{
+  "template": "git@github.com:UrbanMachine/cookiecutter-python-template.git",
+  "commit": "6debf23b082121f4768b791a0341a7d6b79f74e2",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "email": "apocthiel@gmail.com",
+      "github_org": "apockill",
+      "project_name": "creepycrawlai",
+      "description": "A deep neural network evolutionary sim, for interactive passive art displays.",
+      "version": "0.1.0",
+      "_template": "git@github.com:UrbanMachine/cookiecutter-python-template.git"
+    }
+  },
+  "directory": null
+}

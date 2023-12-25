@@ -1,6 +1,7 @@
 from godot.bindings import Input
 
 from crawlai import keybindings
+from crawlai.grid import Grid
 from crawlai.items.critter.base_critter import BaseCritter
 from crawlai.position import Position
 from crawlai.turn import Turn
@@ -19,10 +20,12 @@ class ControllableMixin(BaseCritter):
     speed_multiplier = 300
     """How fast to move on keypress"""
 
-    def get_turn(self, inputs) -> Turn:
+    def get_turn(self, grid: Grid) -> Turn:
         if not self.is_selected:
             # Only process input if this critter is selected
-            return super().get_turn(inputs)
+            turn = super().get_turn(grid)
+            assert turn is not None, "A child class should implement turn!"
+            return turn
 
         direction = Position(0, 0)
         for key, vector in directions.items():

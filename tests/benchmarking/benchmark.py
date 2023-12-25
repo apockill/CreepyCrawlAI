@@ -8,11 +8,11 @@ from progress.bar import IncrementalBar
 
 from crawlai.game_scripts.world import World
 from crawlai.items.critter.critter import Critter
-from tests import monkeypatch_godot_import
+from tests import monkeypatch_godot_import  # noqa: F401
 from tests.helpers import Timer
 
 
-def main(min_num_critters, n_ticks):
+def main(min_num_critters: int, n_ticks: int) -> None:
     tf.random.set_seed(1)
     random.seed("benchmark")
 
@@ -52,7 +52,7 @@ def main(min_num_critters, n_ticks):
     tps = round(n_ticks / (time() - start), 3)
 
     with Path("tests/benchmarking/benchmark.txt").open("a") as f:
-        CUDA_VISIBLE_DEVICES = os.environ.get("CUDA_VISIBLE_DEVICES", None)
+        cuda_devices = os.environ.get("CUDA_VISIBLE_DEVICES", None)
         critters = [c for c in world.grid if isinstance(c, Critter)]
         print("Critters", critters)
         steps = int(critters[0].steps)
@@ -61,19 +61,19 @@ def main(min_num_critters, n_ticks):
         )
         avg_total_deaths = round(sum(c.deaths for c in critters) / steps, 1)
         report = (
-            f"\nTPS: {tps}, "
-            f"AVG TOTAL REWARD: {avg_total_reward}, "
-            f"AVG DEATHS: {avg_total_deaths}, "
-            f"| N_TICKS: {N_TICKS} "
-            f"world.min_num_critters: {world.min_num_critters}, "
-            f"world.min_num_food {world.min_num_food}, "
-            f"world.grid_width {world.grid_width}, "
-            f"world.grid_height {world.grid_height}, "
-            f"world.rendering {world.rendering}, "
-            f"Critter.INPUT_RADIUS {Critter.INPUT_RADIUS}, "
-            f"Critter.TRAIN_BATCH_SIZE {Critter.TRAIN_BATCH_SIZE}, "
-            f"Critter.REPLAY_BUFFER_CAPACITY {Critter.REPLAY_BUFFER_CAPACITY}, "
-            f"CUDA_VISIBLE_DEVICES {CUDA_VISIBLE_DEVICES}"
+            f"\n{tps=}, "
+            f"{avg_total_reward=}, "
+            f"{avg_total_deaths=}, "
+            f"{n_ticks=} "
+            f"{world.min_num_critters=}, "
+            f"{world.min_num_food=}, "
+            f"{world.grid_width=}, "
+            f"{world.grid_height=}, "
+            f"{world.rendering=}, "
+            f"{Critter.INPUT_RADIUS=}, "
+            f"{Critter.TRAIN_BATCH_SIZE=}, "
+            f"{Critter.REPLAY_BUFFER_CAPACITY=}, "
+            f"{cuda_devices=}"
         )
         f.write(report)
     print(report)

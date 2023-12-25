@@ -27,11 +27,11 @@ def test_random_movement_persists_safely(
     undying_base_critter_type: BaseCritter, world: World
 ) -> None:
     """Basically, make sure things don't crash during normal use"""
-    world.min_num_critters = 10
-    world.min_num_food = 100
+    world.min_num_critters = 9
+    world.min_num_food = 101
     world.grid_height = 25
     world.grid_width = 15
-    n_ticks = 100
+    n_ticks = 132
 
     world._ready()
     validate_grid(world.grid)

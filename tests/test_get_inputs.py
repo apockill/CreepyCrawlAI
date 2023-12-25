@@ -70,7 +70,7 @@ test_get_grid_around_parameters = [
     argvalues=test_get_grid_around_parameters,
 )
 def test_get_grid_around(
-    pos: tuple[int, int], radius: int, expected_occupied_layers: npt.NDArray[np.int8]
+    pos: tuple[int, int], radius: int, expected_occupied_layers: npt.NDArray[np.int_]
 ) -> None:
     """Creates a grid of shape:
     [[0 0 0 0 0]
@@ -137,7 +137,7 @@ def test_instance_grid_is_cached() -> None:
     ), "The caches should start out empty!"
 
     def validate_cache_changes(
-        changed: bool, last_cache: dict[Hashable, npt.NDArray[np.int8]]
+        changed: bool, last_cache: dict[Hashable, npt.NDArray[np.int_]]
     ) -> None:
         cache = extract_inputs._instance_grid_cache
         assert len(cache) == 1

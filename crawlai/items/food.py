@@ -1,6 +1,10 @@
+from godot.bindings import Node, ResourceLoader
+
 from crawlai.grid import Grid
 from crawlai.grid_item import GridItem
 from crawlai.math_utils import clamp
+
+_food_resource = ResourceLoader.load("assets/food.png")
 
 
 class Food(GridItem):
@@ -16,7 +20,7 @@ class Food(GridItem):
         self.nutrition -= to_take
         return amount
 
-    def _load_instance(self):
+    def _load_instance(self) -> Node:
         return _food_resource.instance()
 
     def perform_action_onto(self, other: "GridItem") -> None:

@@ -7,21 +7,21 @@ import numpy.typing as npt
 from crawlai.grid import Grid
 from crawlai.position import Position
 
-INPUT_DTYPE = np.int
+INPUT_DTYPE = np.int_
 """The smallest int type accepted by tensorflow"""
 
 # TODO: Implement caching
 _generate_layered_grid_lock = RLock()
 """Because generating the full layered grid is a bit expensive, it's best for
 one thread to process this and the rest of them to use the cached result. """
-_instance_grid_cache: dict[Hashable, npt.NDArray[np.int8]] = {}
+_instance_grid_cache: dict[Hashable, npt.NDArray[np.int_]] = {}
 """Holds a dictionary of a single value, of format
 {hash(grid.array.data.tobytes(), ): instance_grid} """
 
 
 def _generate_layered_grid(
     grid: Grid, layers: dict[str, int], radius: int
-) -> npt.NDArray[np.int8]:
+) -> npt.NDArray[np.int_]:
     """Converts the grid of shape (x, y) to (x, y, obj_layers)
     The 0th index of the grid always represents boundaries or walls.
 
@@ -52,7 +52,7 @@ def _generate_layered_grid(
 
 def get_instance_grid(
     grid: Grid, pos: Position, radius: int, layers: dict[str, int]
-) -> npt.NDArray[np.int8]:
+) -> npt.NDArray[np.int_]:
     """Get a numpy array of obj IDs surrounding a particular area.
     This function will always return an array of shape (radius, radius),
     where the value is the object ID.

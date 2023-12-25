@@ -86,3 +86,4 @@ class World(Node2D):
 
     def close(self) -> None:
         self.pool.terminate()
+        self.pool.join()

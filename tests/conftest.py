@@ -1,3 +1,4 @@
+import tests.monkeypatch_godot_import  # noqa: F401 # isort: skip
 import random
 from collections.abc import Generator
 
@@ -5,7 +6,7 @@ import pytest
 
 from crawlai.game_scripts.world import World
 from crawlai.model import extract_inputs
-from tests import helpers, monkeypatch_godot_import  # noqa:F401
+from tests import helpers
 
 
 @pytest.fixture(autouse=True)

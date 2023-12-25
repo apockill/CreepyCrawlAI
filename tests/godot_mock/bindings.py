@@ -18,10 +18,10 @@ class Node:
         return self._instance_id
 
     def add_child(self, node):
-        assert isinstance(node, Node)
+        assert isinstance(node, Node), f"Expected {Node}, got {type(node)}"
 
     def set_position(self, vector2):
-        assert isinstance(vector2, Vector2)
+        assert isinstance(vector2, Vector2), f"Expected {Vector2}, got {type(vector2)}"
         assert vector2
         self._position = vector2
 
@@ -47,7 +47,7 @@ class ResourceLoader:
     @staticmethod
     def load(resource_path: str):
         """Verify the resource path exists"""
-        resource_path = resource_path.replace("res://", "")
+        resource_path = Path(resource_path).absolute().resolve(strict=True)
         assert Path(resource_path).is_file()
 
         class Unloaded:

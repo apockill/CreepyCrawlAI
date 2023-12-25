@@ -34,7 +34,7 @@ class Grid:
         self._hash_cache: int | None = None
 
         # Grid state
-        self.array: npt.NDArray[np.int8] = np.zeros(
+        self.array: npt.NDArray[np.int_] = np.zeros(
             shape=(width, height), dtype=np.int_
         )
         """Holds the instance ids of each object. 0 means empty"""

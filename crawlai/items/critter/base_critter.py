@@ -1,6 +1,4 @@
-from typing import Any
-
-from godot.bindings import ResourceLoader
+from godot.bindings import Node, ResourceLoader
 
 from crawlai.grid_item import GridItem
 from crawlai.items.food import Food
@@ -38,7 +36,7 @@ class BaseCritter(GridItem):
         self.age += 1
         self.health -= self.HEALTH_TICK_PENALTY
 
-    def _load_instance(self) -> Any:
+    def _load_instance(self) -> Node:
         return _critter_resource.instance()
 
     def perform_action_onto(self, other: "GridItem") -> None:

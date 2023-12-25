@@ -4,8 +4,7 @@ from crawlai.grid import Grid
 from crawlai.grid_item import GridItem
 from crawlai.math_utils import clamp
 
-
-_food_resource = ResourceLoader.load("res://Game/Food/Food.tscn")
+_food_resource = ResourceLoader.load("assets/food.png")
 
 
 class Food(GridItem):

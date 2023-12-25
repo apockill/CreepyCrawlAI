@@ -6,7 +6,7 @@ from crawlai.math_utils import clamp
 from crawlai.position import Position
 from crawlai.turn import Turn
 
-_critter_resource = ResourceLoader.load("res://Game/Critter/Critter.tscn")
+_critter_resource = ResourceLoader.load("assets/critter.png")
 
 
 class BaseCritter(GridItem):

@@ -1,3 +1,4 @@
+from tests import monkeypatch_godot_import  # noqa: F401  # isort:skip
 import os
 import random
 from pathlib import Path
@@ -8,7 +9,6 @@ from progress.bar import IncrementalBar
 
 from crawlai.game_scripts.world import World
 from crawlai.items.critter.critter import Critter
-from tests import monkeypatch_godot_import  # noqa: F401
 from tests.helpers import Timer
 
 
@@ -23,9 +23,6 @@ def main(min_num_critters: int, n_ticks: int) -> None:
     world.grid_width = 250
     world.grid_height = 250
     world.rendering = False
-
-    # Disable critters dying, to have more consistent benchmarks
-    Critter.HEALTH_TICK_PENALTY = 0
 
     print("Initializing Creatures...")
     world._ready()
@@ -57,9 +54,9 @@ def main(min_num_critters: int, n_ticks: int) -> None:
         print("Critters", critters)
         steps = int(critters[0].steps)
         avg_total_reward = round(
-            sum(float(c.total_reward) for c in critters) / steps, 1
+            sum(float(c.total_reward) for c in critters) / steps, 3
         )
-        avg_total_deaths = round(sum(c.deaths for c in critters) / steps, 1)
+        avg_total_deaths = round(sum(c.deaths for c in critters) / steps, 3)
         report = (
             f"\n{tps=}, "
             f"{avg_total_reward=}, "
@@ -73,6 +70,8 @@ def main(min_num_critters: int, n_ticks: int) -> None:
             f"{Critter.INPUT_RADIUS=}, "
             f"{Critter.TRAIN_BATCH_SIZE=}, "
             f"{Critter.REPLAY_BUFFER_CAPACITY=}, "
+            f"{Critter.MAX_HEALTH=}, "
+            f"{Critter.HEALTH_TICK_PENALTY=}, "
             f"{cuda_devices=}"
         )
         f.write(report)
@@ -80,4 +79,4 @@ def main(min_num_critters: int, n_ticks: int) -> None:
 
 
 if __name__ == "__main__":
-    main(20, 100)
+    main(10, 1000)

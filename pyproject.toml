@@ -12,6 +12,7 @@ python = ">=3.10,<3.12"
 numpy = "^1.26.2"
 tf-agents = "0.19.0"
 tensorflow = "2.15.0"
+progress = "^1.6"
 
 [tool.poetry.dev-dependencies]
 vulture = "^2.10"

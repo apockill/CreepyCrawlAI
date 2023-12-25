@@ -27,11 +27,11 @@ class AICritterMixin(BaseCritter):
         for c in [(0, 1), (1, 0), (-1, 0), (0, -1)]
         for is_action in (True, False)
     ] + [Turn(Position(0, 0), False)]
-    INPUT_RADIUS = 15  # TODO: Attempt making this much, much smaller
+    INPUT_RADIUS = 4
     LAYERS = {"Critter": 1, "Food": 2}
 
     # Params for data collection
-    REPLAY_BUFFER_CAPACITY = 100000
+    REPLAY_BUFFER_CAPACITY = 50000
 
     # Params for train
     TRAIN_BATCH_SIZE = 64

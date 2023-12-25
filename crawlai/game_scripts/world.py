@@ -49,9 +49,9 @@ class World(Node2D):
         item_counts = Counter(type(item) for item in self.grid)
 
         for _ in range(self.min_num_critters - item_counts[Critter]):
-            self.add_item(self.grid.random_free_cell, Critter())
+            assert self.add_item(self.grid.random_free_cell, Critter())
         for _ in range(self.min_num_food - item_counts[Food]):
-            self.add_item(self.grid.random_free_cell, Food())
+            assert self.add_item(self.grid.random_free_cell, Food())
 
     def add_item(self, pos: Position, item: CreatedItem) -> CreatedItem | None:
         successful = self.grid.add_item(pos=pos, grid_item=item)

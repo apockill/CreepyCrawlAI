@@ -1405,6 +1405,16 @@ dev = ["pre-commit", "tox"]
 testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
+name = "progress"
+version = "1.6"
+description = "Easy to use progress bars"
+optional = false
+python-versions = "*"
+files = [
+    {file = "progress-1.6.tar.gz", hash = "sha256:c9c86e98b5c03fa1fe11e3b67c1feda4788b8d0fe7336c2ff7d5644ccfba34cd"},
+]
+
+[[package]]
 name = "protobuf"
 version = "4.23.4"
 description = ""
@@ -2222,4 +2232,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.12"
-content-hash = "02309243e0fb685121523f6995068cfb4834bb4817b653b469ddd4b31bd03a3d"
+content-hash = "197bc9d679c603793c9c9697cab73d6c4aecb0ae2fef36ebb42ba99ae03c9b31"

@@ -1,3 +1,4 @@
+from tests import monkeypatch_godot_import  # noqa: F401 # isort: skip
 import random
 
 import tensorflow as tf
@@ -6,7 +7,7 @@ from crawlai.game_scripts.world import World
 from tests.helpers import Timer
 
 
-def main(ticks_per_report: int) -> None:
+def main(ticks_per_report: int = 1000) -> None:
     tf.random.set_seed(1)
     random.seed("benchmark")
 
@@ -29,4 +30,4 @@ def main(ticks_per_report: int) -> None:
 
 
 if __name__ == "__main__":
-    main(ticks_per_report=1000)
+    main()

@@ -6,7 +6,9 @@ def verify_all_threads_closed(allowable_threads: list[str] | None = None) -> Non
 
     Borrowed this function from the test helper functions in this repo:
     https://github.com/opencv/open_vision_capsules
-    :return:
+
+    :param allowable_threads: Threads that are allowed to be running
+    :raises OSError: If any threads are still running
     """
     allowable_threads = allowable_threads or []
     allowable_threads += [

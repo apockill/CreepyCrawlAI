@@ -39,7 +39,7 @@ def test_random_movement_persists_safely(
     # Simulate the world for various ticks, asserting that the board state
     # is changing between ticks (very, _very_ unlikely that it doesn't)
     state_before = world.grid.array.copy()
-    for i in range(0, n_ticks):
+    for _ in range(0, n_ticks):
         world._process()
         validate_grid(world.grid)
     assert not (
@@ -204,7 +204,7 @@ def test_world_respawns_food(world: World) -> None:
     assert len(get_foods()) == world.min_num_food
 
     # Delete some food and verify the world respawns it
-    for i in range(10):
+    for _ in range(10):
         food_item = get_foods()[0]
         world.grid.delete_item(food_item)
     assert len(get_foods()) == world.min_num_food - 10

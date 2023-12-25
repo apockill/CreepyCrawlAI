@@ -27,9 +27,10 @@ def _generate_layered_grid(
 
     :param grid: The grid
     :param layers: A dictionary of {"GRID_ITEM_TYPE": LayerID}, where layer ID
-           must be the index on obj_layer for that item ID to appear on
+        must be the index on obj_layer for that item ID to appear on
     :param radius: The radius that critters will have. This will pad the sides
-    of the grid with walls on the 0 layer.
+        of the grid with walls on the 0 layer.
+    :return: A numpy array of shape (x, y, obj_layers)
     """
     w, h = grid.array.shape
     full_grid = np.zeros(
@@ -61,6 +62,12 @@ def get_instance_grid(
                0: walls
                1: critters
                2: food
+    :param grid: The grid
+    :param pos: The position to crop around
+    :param radius: The radius to crop around
+    :param layers: A dictionary of {"GRID_ITEM_TYPE": LayerID}, where layer ID
+           must be the index on obj_layer for that item ID to appear on
+    :return: A numpy array of shape (radius, radius, obj_layers)
     """
     global _instance_grid_cache
     with _generate_layered_grid_lock:

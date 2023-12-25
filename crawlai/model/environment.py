@@ -29,6 +29,7 @@ class CritterEnvironment(PyEnvironment):
     def batched(self) -> bool:
         """By saying we are batched, then when TFPyEnvironment wraps this class
         it won't bother re-wrapping this environment in a BatchedPyEnvironment.
+        :return: True
         """
         return True
 
@@ -36,6 +37,7 @@ class CritterEnvironment(PyEnvironment):
     def batch_size(self) -> int:
         """By saying we are batched, then when TFPyEnvironment wraps this class
         it won't bother re-wrapping this environment in a BatchedPyEnvironment.
+        :return: A constant batch size of 1
         """
         return 1
 
@@ -45,8 +47,7 @@ class CritterEnvironment(PyEnvironment):
         May use a subclass of `ArraySpec` that specifies additional properties such
         as min and max bounds on the values.
 
-        Returns:
-          An `ArraySpec`, or a nested dict, list or tuple of `ArraySpec`s.
+        :return: An `ArraySpec`, or a nested dict, list or tuple of `ArraySpec`s.
         """
 
         return self._observation_spec
@@ -57,8 +58,7 @@ class CritterEnvironment(PyEnvironment):
         May use a subclass of `ArraySpec` that specifies additional properties such
         as min and max bounds on the values.
 
-        Returns:
-          An `ArraySpec`, or a nested dict, list or tuple of `ArraySpec`s.
+        :return: An `ArraySpec`, or a nested dict, list or tuple of `ArraySpec`s.
         """
         return self._action_spec
 

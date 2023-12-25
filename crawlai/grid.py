@@ -11,8 +11,7 @@ SomeCallable = TypeVar("SomeCallable", bound=Callable[..., Any])
 
 
 def lockable(fn: SomeCallable) -> SomeCallable:
-    """Raises a WritingToLockedGrid exception when this method is accessed
-    on a locked grid"""
+    """Decorator that raises an exception if the grid is locked"""
 
     def wrapper(self: "Grid", *args: Any, **kwargs: Any) -> Any:
         if self.locked:
@@ -81,8 +80,8 @@ class Grid:
 
     @lockable
     def delete_item(self, grid_item: GridItem) -> None:
-        """Dereference everything about the item, and then queue_free the
-        instance"""
+        """Deletes the item from the grid, and frees the instance"""
+
         pos = self.id_to_pos.pop(grid_item.id)
         del self.id_to_obj[grid_item.id]
         self.array[pos.x][pos.y] = 0
@@ -93,8 +92,11 @@ class Grid:
         """Applies the grid_item's action onto the grid cell that is 'direction'
         relative to grid_item's position
 
+        :param direction: The direction to apply the action
+        :param grid_item: The grid item to apply the action from
         :return: True if an action was performed, False if no action was
-        performed
+            performed
+        :raises RuntimeError: If the direction is (0, 0)
         """
 
         if direction.x == 0 and direction.y == 0:

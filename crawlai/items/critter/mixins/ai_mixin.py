@@ -180,7 +180,11 @@ class AICritterMixin(BaseCritter):
 
     def _perform_episode(self, grid: Grid) -> Generator[TimeStep, None, None]:
         """Run through an episode from start to finish, keeping stats
-        correct and yielding time steps along the way"""
+        correct and yielding time steps along the way
+
+        :param grid: The grid to perform the episode on
+        :yields: A generator of TimeSteps, with the first being a FIRST step,
+        """
 
         time_step = self._next_time_step(
             grid=grid, step_type=self._BatchedStepType.FIRST
@@ -240,9 +244,10 @@ class AICritterMixin(BaseCritter):
         else:
             raise RuntimeError(f"Unknown step type: {step_type}")
 
-		return TimeStep(
-			step_type=step_type,
-			reward=tf.convert_to_tensor([reward], dtype=tf.float32),
-			observation=tf.expand_dims(observation, axis=0),
-			# TODO: Look at tfagents example to figure out discount
-			discount=tf.convert_to_tensor([1.0]))
+        return TimeStep(
+            step_type=step_type,
+            reward=tf.convert_to_tensor([reward], dtype=tf.float32),
+            observation=tf.expand_dims(observation, axis=0),
+            # TODO: Look at tfagents example to figure out discount
+            discount=tf.convert_to_tensor([1.0]),
+        )

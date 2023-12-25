@@ -150,7 +150,7 @@ def test_instance_grid_is_cached() -> None:
         )
 
     # Verify the cache doesn't change if the grid hasn't changed
-    for i in range(10):
+    for _ in range(10):
         last_cache = extract_inputs._instance_grid_cache.copy()
         with grid as locked_grid:
             extract_inputs.get_instance_grid(

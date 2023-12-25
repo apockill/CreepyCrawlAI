@@ -29,7 +29,7 @@ def test_dies_of_hunger(world: World) -> None:
     with patch.object(
         world.grid, "delete_item", wraps=world.grid.delete_item
     ) as delete_item:
-        for i in range(n_steps_till_death - 1):
+        for _ in range(n_steps_till_death - 1):
             world._process()
             assert not delete_item.called
             validate_grid(world.grid)
@@ -64,7 +64,7 @@ def test_consumes_food_then_dies(world: World) -> None:
         world.grid, "delete_item", wraps=world.grid.delete_item
     ) as delete_item:
         # Verify the critter is consuming
-        for i in range(n_steps_till_food_depleted - 1):
+        for _ in range(n_steps_till_food_depleted - 1):
             world._process()
             assert food.nutrition != food.MAX_NUTRITION
             assert critter.health == Critter.MAX_HEALTH
@@ -75,7 +75,7 @@ def test_consumes_food_then_dies(world: World) -> None:
         assert delete_item.call_count == 1
 
         # Wait for the critter to die of hunger
-        for i in range(n_steps_till_death - 1):
+        for _ in range(n_steps_till_death - 1):
             world._process()
             assert critter.health != Critter.MAX_HEALTH
             assert delete_item.call_count == 1

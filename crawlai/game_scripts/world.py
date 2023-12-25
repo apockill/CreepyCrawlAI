@@ -1,6 +1,6 @@
 from collections import Counter
 from multiprocessing.pool import ThreadPool
-from typing import Optional, TypeVar
+from typing import TypeVar
 
 from godot import export, exposed
 from godot.bindings import Node2D, Vector2
@@ -41,17 +41,16 @@ class World(Node2D):
                 )
 
     def _on_render_button_toggled(self, button_pressed: bool) -> None:
-        """Enable and disable rendering
-        Connected to: GUI.RenderButton"""
+        """Enable and disable rendering"""
         self.rendering = button_pressed
 
     def _spawn_items(self) -> None:
         """Spawns items until they meet the minimum requirements"""
         item_counts = Counter(type(item) for item in self.grid)
 
-        for i in range(self.min_num_critters - item_counts[Critter]):
+        for _ in range(self.min_num_critters - item_counts[Critter]):
             self.add_item(self.grid.random_free_cell, Critter())
-        for i in range(self.min_num_food - item_counts[Food]):
+        for _ in range(self.min_num_food - item_counts[Food]):
             self.add_item(self.grid.random_free_cell, Food())
 
     def add_item(self, pos: Position, item: CreatedItem) -> CreatedItem | None:
